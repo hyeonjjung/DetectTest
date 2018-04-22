@@ -36,7 +36,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.UUID;
 
-public class MainActivity extends AppCompatActivity implements GPSCallback, BeaconConsumer {
+public class MainActivity extends AppCompatActivity implements BeaconConsumer {
 
     private static final String TAG = "MainActivity";
 
@@ -44,11 +44,6 @@ public class MainActivity extends AppCompatActivity implements GPSCallback, Beac
 
     private static final String BEACON_PARSER = "m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24,d:25-25";
 
-    private GPSManager gpsManager = null;
-    private double speed = 0.0;
-    Boolean isGPSEnabled = false;
-    LocationManager locationManager;
-    double currentSpeed, kmphSpeed;
     TextView txtview, Locationtxtview, beaconTxtview;
 
     BeaconController beaconController;
@@ -101,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements GPSCallback, Beac
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getCurrentSpeed(txtview);
+
             }
         });
 
@@ -120,44 +115,11 @@ public class MainActivity extends AppCompatActivity implements GPSCallback, Beac
         });
     }
 
-    public void getCurrentSpeed(View view) {
-        txtview.setText("Waiting for GPS");
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        gpsManager = new GPSManager(MainActivity.this);
-        isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        if (isGPSEnabled) {
-            gpsManager.startListening(getApplicationContext());
-            gpsManager.setGPSCallback(this);
-        } else {
-            gpsManager.showSettingsAlert();
-        }
-    }
-
     @Override
     protected void onDestroy() {
-        if (gpsManager != null) {
-            gpsManager.stopListening();
-            gpsManager.setGPSCallback(null);
-            gpsManager = null;
-        }
         super.onDestroy();
         beaconController.stopBeaconTransmitter();
         stopBeaconScan();
-    }
-
-    @Override
-    public void onGPSUpdate(Location location) {
-        speed = location.getSpeed();
-        currentSpeed = round(speed, 3, BigDecimal.ROUND_HALF_UP);
-        kmphSpeed = round((currentSpeed * 3.6), 3, BigDecimal.ROUND_HALF_UP);
-        txtview.setText(kmphSpeed + "km/h");
-
-    }
-
-    public static double round(double unrounded, int precision, int roundingMode) {
-        BigDecimal bd = new BigDecimal(unrounded);
-        BigDecimal rounded = bd.setScale(precision, roundingMode);
-        return rounded.doubleValue();
     }
 
     @Override
