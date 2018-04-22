@@ -7,36 +7,62 @@
     android:orientation="vertical"
     tools:context="com.example.userp.detecttest.MainActivity">
 
-    <Button
-        android:id="@+id/startBtn"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Button" />
-
-    <TextView
-        android:id="@+id/speedTextView"
-        android:textSize="20dp"
-        android:layout_width="wrap_content"
+        android:background="@color/itemColor"
+        android:layout_margin="5dp"
+        android:padding="10dp"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/speedTextView"
+            android:textSize="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Current speed : 0 km/h" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Current Speed!" />
-    <TextView
-        android:id="@+id/locationTextView"
-        android:textSize="20dp"
-        android:layout_width="wrap_content"
+        android:background="@color/itemColor"
+        android:layout_margin="5dp"
+        android:padding="10dp"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/locationTextView"
+            android:textSize="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Location!" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Location!" />
-
-    <Button
-    android:id="@+id/startBeaconBtn"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="Start Beacon Transmitter" />
-    <TextView
-        android:id="@+id/findedBeaconTextView"
-        android:textSize="20dp"
-        android:layout_width="wrap_content"
+        android:background="@color/itemColor"
+        android:layout_margin="5dp"
+        android:padding="10dp"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/findedBeaconTextView"
+            android:textSize="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Finding Beacon..." />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Finding Beacon..." />
+        android:background="@color/colorAccent"
+        android:layout_margin="5dp"
+        android:padding="10dp"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/resultTextView"
+            android:textSize="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Who is Driver?" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/startBeaconMonitoringBtn"
