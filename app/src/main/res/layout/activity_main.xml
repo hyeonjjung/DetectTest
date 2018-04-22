@@ -14,9 +14,34 @@
         android:text="Button" />
 
     <TextView
-        android:id="@+id/SpeedTextView"
+        android:id="@+id/speedTextView"
+        android:textSize="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:text="Current Speed!" />
+    <TextView
+        android:id="@+id/locationTextView"
+        android:textSize="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Location!" />
+
+    <Button
+    android:id="@+id/startBeaconBtn"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Start Beacon Transmitter" />
+    <TextView
+        android:id="@+id/findedBeaconTextView"
+        android:textSize="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Finding Beacon..." />
+
+    <Button
+        android:id="@+id/startBeaconMonitoringBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Start Beacon Monitoring" />
 
 </LinearLayout>
