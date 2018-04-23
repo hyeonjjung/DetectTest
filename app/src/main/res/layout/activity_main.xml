@@ -10,30 +10,50 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/itemColor"
         android:layout_margin="5dp"
-        android:padding="10dp"
-        android:orientation="horizontal">
+        android:background="@color/itemColor"
+        android:orientation="vertical"
+        android:padding="10dp">
+
         <TextView
             android:id="@+id/speedTextView"
-            android:textSize="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Current speed : 0 km/h" />
+            android:text="Current speed : 0 km/h"
+            android:textSize="20dp" />
+        <TextView
+            android:id="@+id/resultSpeedTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="I'm not in the car"
+            android:textSize="20dp" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/itemColor"
         android:layout_margin="5dp"
         android:padding="10dp"
-        android:orientation="horizontal">
+        android:orientation="vertical">
         <TextView
             android:id="@+id/locationTextView"
             android:textSize="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Location!" />
+            android:text="Magnetic Field Sensor" />
+        <TextView
+            android:id="@+id/magneticMaxValueTextView"
+            android:textSize="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Max value is ..." />
+        <TextView
+            android:id="@+id/resultMagneticTextView"
+            android:textSize="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Where i am?" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -41,13 +61,19 @@
         android:background="@color/itemColor"
         android:layout_margin="5dp"
         android:padding="10dp"
-        android:orientation="horizontal">
+        android:orientation="vertical">
         <TextView
             android:id="@+id/findedBeaconTextView"
             android:textSize="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Finding Beacon..." />
+            android:text="Beacon State" />
+        <TextView
+            android:id="@+id/resultBeaconTextView"
+            android:textSize="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No working.." />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
