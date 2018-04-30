@@ -24,6 +24,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import org.altbeacon.beacon.Beacon;
@@ -53,12 +54,13 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
 
     private TextView txtview, Locationtxtview, beaconTxtview, resultTxtview;
     private TextView resultSpeedTextview;
-    private TextView resultMagneticTextview, magneticMaxValueTxtview;
+    private TextView resultMagneticTextview, magneticMaxValueTxtview, magneticValueTxtview;
     private Button startBeaconMonitoringBtn;
 
-    BeaconController beaconController;
-
+    /*** Beacon Scan ***/
+    private BeaconController beaconController;
     private BeaconManager beaconManager = null;
+    private boolean isBeacon = false;
 
     private LocationManager locationManager = null;
     private LocationListener locationListener = null;
@@ -73,6 +75,9 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
     private Sensor mMagnet = null;
     private SensorEventListener mMagnetLis = null;
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
         resultSpeedTextview = (TextView) findViewById(R.id.resultSpeedTextView);
         resultMagneticTextview = (TextView) findViewById(R.id.resultMagneticTextView);
         magneticMaxValueTxtview = (TextView) findViewById(R.id.magneticMaxValueTextView);
+        magneticValueTxtview = (TextView) findViewById(R.id.magneticValueTextView);
 
         startBeaconMonitoringBtn = (Button)findViewById(R.id.startBeaconMonitoringBtn);
         beaconController = new BeaconController();
@@ -125,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
             @Override
             public void onClick(View view) {
                 startBeaconScan();
+                beaconController.startBeaconTransmitter(getApplication());
             }
         });
     }
@@ -153,19 +160,12 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
                         int minor = beacon.getId3().toInt();
                         Log.d(TAG, beacon.getDataFields().get(0).toString());
                         if(uuid.toString() == MY_UUID) {
-
+                            isBeacon = true;
+                            stopBeaconScan();
                         }
                     }
                 } else {
                     Log.d(TAG, "I can't find beacon...");
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.d(TAG, "onRunnable()");
-                            resultTxtview.setText("I'm Driver!");
-
-                        }
-                    });
                 }
 
             }
@@ -175,6 +175,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
         } catch (RemoteException e) {    }
     }
     public void startBeaconScan() {
+        isBeacon = false;
         if(!beaconManager.isBound(MainActivity.this)) {
             beaconManager.bind(MainActivity.this);
         }
@@ -198,6 +199,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
                         isSecondSpeed = true;
                     } else {
                         startBeaconScan();
+                        beaconController.startBeaconTransmitter(getApplicationContext());
                         isSecondSpeed = false;
                         runOnUiThread(new Runnable() {
                             @Override
@@ -238,13 +240,20 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
             return null;
         }
     }
-    private class StopBeaconTask  extends AsyncTask<URL, Integer, Long> {
 
+    /*
+    * 비콘 스캔 시작 후 5초 뒤에 자동으로 정지
+    * */
+    private class StopBeaconTask  extends AsyncTask<URL, Integer, Long> {
         @Override
         protected Long doInBackground(URL... urls) {
             try {
-                Thread.sleep(3000);
+                Thread.sleep(5000);
                 stopBeaconScan();
+                if(!isBeacon) {
+                    Log.d(TAG, "근처의 비콘을 찾지 못함");
+                }
+                Log.d(TAG, "stopd beacon scan");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -272,6 +281,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
                 }
             }
 
+
             v1 = sensorEvent.values[0];
             v2 = sensorEvent.values[1];
             v3 = sensorEvent.values[2];
@@ -279,6 +289,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
             switch (sensorEvent.sensor.getType()) {
                 case Sensor.TYPE_MAGNETIC_FIELD:
                     magneticMaxValueTxtview.setText("Max value is "+maxGap);
+                    magneticValueTxtview.setText("Current value is\n"+v1+"\n"+v2+"\n"+v3);
                     if(maxGap > 5) {
                         //DashBoard
                         resultTxtview.setText("I'm driver!");
