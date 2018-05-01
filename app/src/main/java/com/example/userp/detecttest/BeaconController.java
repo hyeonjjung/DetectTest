@@ -51,6 +51,7 @@ public class BeaconController {
                     .setDataFields(Arrays.asList(new Long[]{0l}))
                     .build();
             beaconTransmitter.startAdvertising(beacon);
+            Log.d(TAG, "start beacon advertising");
         }
     }
     public void stopBeaconTransmitter() {
