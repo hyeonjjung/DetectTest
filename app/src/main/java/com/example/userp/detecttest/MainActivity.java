@@ -2,8 +2,6 @@ package com.example.userp.detecttest;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -13,7 +11,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.os.RemoteException;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -31,12 +28,10 @@ import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
 import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.BeaconParser;
-import org.altbeacon.beacon.MonitorNotifier;
 import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
 import org.w3c.dom.Text;
 
-import java.math.BigDecimal;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Iterator;
@@ -52,16 +47,17 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
     private static final String BEACON_PARSER = "m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24,d:25-25";
     private static final String MY_UUID = "2F234454-CF6D-4A0F-ADF2-F4911BA9FFA6";
 
-    private TextView txtview, Locationtxtview, beaconTxtview, resultTxtview;
+    private TextView txtview, Locationtxtview;
     private TextView resultSpeedTextview;
-    private TextView resultMagneticTextview, magneticMaxValueTxtview, magneticValueTxtview;
-    private Button startBeaconMonitoringBtn;
+    private TextView magneticMaxValueTxtview, magneticValueTxtview;
+    private TextView accelValueTxtView;
 
     /*** Beacon Scan ***/
     private BeaconController beaconController;
     private BeaconManager beaconManager = null;
     private boolean isBeacon = false;
 
+    /*** GPS ***/
     private LocationManager locationManager = null;
     private LocationListener locationListener = null;
 
@@ -71,26 +67,31 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
 
     private boolean isSecondSpeed = false;
 
+    /*** Sensor ***/
     private SensorManager sensorManager = null;
     private Sensor mMagnet = null;
-    private SensorEventListener mMagnetLis = null;
+    private SensorEventListener sensorEventListener = null;
 
+    private Sensor mAccel = null;
 
+    /*** Temperate Start Buttons ***/
+    private Button startGPSBtn = null;
+    private Button startMagneticBtn = null;
+    private Button startBeaconMonitoringBtn = null;
+    private Button startAccelBtn = null;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         txtview = (TextView) findViewById(R.id.speedTextView);
-        beaconTxtview = (TextView) findViewById(R.id.findedBeaconTextView);
-        resultTxtview = (TextView) findViewById(R.id.resultTextView);
         resultSpeedTextview = (TextView) findViewById(R.id.resultSpeedTextView);
-        resultMagneticTextview = (TextView) findViewById(R.id.resultMagneticTextView);
         magneticMaxValueTxtview = (TextView) findViewById(R.id.magneticMaxValueTextView);
         magneticValueTxtview = (TextView) findViewById(R.id.magneticValueTextView);
+        accelValueTxtView = (TextView) findViewById(R.id.accelValueTextView);
 
-        startBeaconMonitoringBtn = (Button)findViewById(R.id.startBeaconMonitoringBtn);
         beaconController = new BeaconController();
 
         beaconManager = BeaconManager.getInstanceForApplication(this);
@@ -101,11 +102,22 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, GPS_UPDATE_MIN_TIME, GPS_UPDATE_MIN_DISTANCE, locationListener);
 
 
-        //Magnetic Field Sensor configuration
+        //Sensor configuration
         sensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
+
         mMagnet = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-        mMagnetLis = new SensorController();
-        sensorManager.registerListener(mMagnetLis, mMagnet, SensorManager.SENSOR_DELAY_FASTEST);
+        sensorEventListener = new SensorController();
+        sensorManager.registerListener(sensorEventListener, mMagnet, SensorManager.SENSOR_DELAY_FASTEST);
+
+        mAccel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+
+        //initializing starting buttons
+        startGPSBtn = (Button)findViewById(R.id.gpsStartBtn);
+        startMagneticBtn = (Button)findViewById(R.id.startMagneticBtn);
+        startBeaconMonitoringBtn = (Button)findViewById(R.id.startBeaconMonitoringBtn);
+        startAccelBtn = (Button)findViewById(R.id.startAccelBtn);
+
 
         //For permission check
         try {
@@ -134,6 +146,25 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
                 beaconController.startBeaconTransmitter(getApplication());
             }
         });
+        startGPSBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startByGPS();
+            }
+        });
+        startMagneticBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        startAccelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startAccelerometer();
+
+            }
+        });
     }
 
     @Override
@@ -141,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
         super.onDestroy();
         beaconController.stopBeaconTransmitter();
         stopBeaconScan();
-        sensorManager.unregisterListener(mMagnetLis);
+        sensorManager.unregisterListener(sensorEventListener);
     }
 
     @Override
@@ -168,23 +199,44 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
                 } else {
                     Log.d(TAG, "I can't find beacon...");
                 }
-
             }
         });
         try {
             beaconManager.startRangingBeaconsInRegion(new Region("myRangingUniqueId", null, null, null));
         } catch (RemoteException e) {    }
     }
-    public void startBeaconScan() {
+    private void startBeaconScan() {
         isBeacon = false;
         if(!beaconManager.isBound(MainActivity.this)) {
             beaconManager.bind(MainActivity.this);
         }
     }
-    public void stopBeaconScan() {
+    private void stopBeaconScan() {
         if(beaconManager.isBound(MainActivity.this)) {
             beaconManager.unbind(MainActivity.this);
         }
+    }
+
+    private void startMangetometer() {
+        if(!sensorManager.equals(null)) {
+            sensorManager.registerListener(sensorEventListener, mMagnet, SensorManager.SENSOR_DELAY_FASTEST);
+        }
+    }
+    private void stopMagnetometer() {
+        if(!sensorManager.equals(null)) {
+            sensorManager.unregisterListener(sensorEventListener);
+        }
+    }
+    private void startAccelerometer() {
+        if(!sensorManager.equals(null)) {
+            sensorManager.registerListener(sensorEventListener, mAccel, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+    }
+    private void stopAccelerometer() {
+        if(!sensorManager.equals(null)) {
+            sensorManager.unregisterListener(sensorEventListener);
+        }
+
     }
 
     private class SpeedActionListener implements LocationListener {
@@ -195,21 +247,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
                 currentSpeed = location.getSpeed() * 3.6;
                 txtview.setText("Current speed : "+currentSpeed+"km/h");
                 if(currentSpeed > 20) {
-                    if(!isSecondSpeed) {
-                        new TimerTask().execute();
-                        isSecondSpeed = true;
-                    } else {
-                        startBeaconScan();
-                        beaconController.startBeaconTransmitter(getApplicationContext());
-                        isSecondSpeed = false;
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                txtview.setText("I'm in the car!!!");
-
-                            }
-                        });
-                    }
+                    startByGPS();
                 }
             }
         }
@@ -235,6 +273,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
         protected Long doInBackground(URL... urls) {
             try {
                 Thread.sleep(5000);
+                isSecondSpeed = false;
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -262,48 +301,18 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
         }
     }
     public class SensorController implements SensorEventListener{
-        float v1, v2, v3, maxGap = 0;
-        float[] gap = new float[3];
-        boolean isFirstValue = true;
-
+        float[] value = new float[3];
         @Override
         public void onSensorChanged(SensorEvent sensorEvent) {
-            if(isFirstValue) {
-                isFirstValue = false;
-            } else {
-                gap[0] = Math.abs(v1 - sensorEvent.values[0]);
-                gap[1] = Math.abs(v2 - sensorEvent.values[1]);
-                gap[2] = Math.abs(v3 - sensorEvent.values[2]);
-
-                for (int i=0; i<3; i++) {
-                    if (gap[i]>=maxGap) {
-                        maxGap = gap[i];
-                    }
-                }
+            for(int i = 0 ; i <sensorEvent.values.length; i++) {
+                value[i] = sensorEvent.values[i];
             }
-
-
-            v1 = sensorEvent.values[0];
-            v2 = sensorEvent.values[1];
-            v3 = sensorEvent.values[2];
-
             switch (sensorEvent.sensor.getType()) {
-                case Sensor.TYPE_MAGNETIC_FIELD:
-                    magneticMaxValueTxtview.setText("Max value is "+maxGap);
-                    magneticValueTxtview.setText("Current value is\n"+v1+"\n"+v2+"\n"+v3);
-                    if(maxGap > 5) {
-                        //DashBoard
-                        resultTxtview.setText("I'm driver!");
-                        resultMagneticTextview.setText("I'm in the front seat!");
+                case Sensor.TYPE_MAGNETIC_FIELD: // 단위는 마이크로테슬라
 
-                    } else if (maxGap > 1) {
-                        //Front Seat
-                        resultMagneticTextview.setText("I'm in the front seat!");
-
-                    } else {
-                        //back Seat
-                        resultMagneticTextview.setText("I'm in the back seat!");
-                    }
+                    break;
+                case Sensor.TYPE_ACCELEROMETER:
+                    accelValueTxtView.setText(value[0]+"\n"+value[1]+"\n"+value[2]);
                     break;
             }
         }
@@ -312,6 +321,40 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
         public void onAccuracyChanged(Sensor sensor, int i) {
 
         }
+    }
+    /*
+    *  GPS speed가 20km/h 이상일 경우
+    * */
+    private void startByGPS() {
+        if(!isSecondSpeed) {    //처음으로 speed > 20
+            new TimerTask().execute();
+            Log.d(TAG, "start by gps first times");
+            isSecondSpeed = true;
+        } else {
+            isSecondSpeed = false;
+            Log.d(TAG, "start by gps second times");
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getApplicationContext(), "GPS speed 20 초가", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    /*
+    * GPS speed가 20km/h 5초이내에 다시 초과되는 경우
+    * */
+    private void startByMagnetometer() {
+        sensorManager.registerListener(sensorEventListener, mMagnet, SensorManager.SENSOR_DELAY_FASTEST);
+    }
+
+    /*
+    * Accelerometer sensor값을 통해서 우회전 혹은 좌회전에서 passenger side인지 혹은 driver side인지 확인
+    * */
+    private void waitingTrunByAccel() {
+        startAccelerometer();
+
     }
 }
 

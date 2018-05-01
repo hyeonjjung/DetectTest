@@ -54,12 +54,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="value is ..." />
-        <TextView
-            android:id="@+id/resultMagneticTextView"
-            android:textSize="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Where i am?" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -69,37 +63,35 @@
         android:padding="10dp"
         android:orientation="vertical">
         <TextView
-            android:id="@+id/findedBeaconTextView"
+            android:id="@+id/accelValueTextView"
             android:textSize="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Beacon State" />
-        <TextView
-            android:id="@+id/resultBeaconTextView"
-            android:textSize="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="No working.." />
+            android:text="value is ..." />
     </LinearLayout>
-    <LinearLayout
+
+    <Button
+        android:id="@+id/gpsStartBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorAccent"
-        android:layout_margin="5dp"
-        android:padding="10dp"
-        android:orientation="horizontal">
-        <TextView
-            android:id="@+id/resultTextView"
-            android:textSize="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Who is Driver?" />
-    </LinearLayout>
+        android:text="Start gps" />
+
+    <Button
+        android:id="@+id/startMagneticBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="start magnetic field" />
 
     <Button
         android:id="@+id/startBeaconMonitoringBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Start Beacon Monitoring" />
+
+    <Button
+        android:id="@+id/startAccelBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="start accelerometer" />
 
 </LinearLayout>
