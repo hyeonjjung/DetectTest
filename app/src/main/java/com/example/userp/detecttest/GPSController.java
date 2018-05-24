@@ -9,6 +9,9 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 /**
  * Created by userp on 2018-05-23.
@@ -23,15 +26,26 @@ public class GPSController {
     private LocationManager locationManager = null;
     private LocationListener locationListener = null;
 
+    private Context context;
+
+    TextView gpsValueTextView;
+    TextView gpsStateTextView;
+    TextView gpsSpeedTextView;
     public GPSController(Context context) {
+        this.context = context;
+        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        locationListener = new SpeedActionListener();
+
+        gpsValueTextView = (TextView) ((Activity)context).findViewById(R.id.gpsTextView);
+        gpsStateTextView = (TextView) ((Activity)context).findViewById(R.id.resultSpeedTextView);
+        gpsSpeedTextView = (TextView) ((Activity)context).findViewById(R.id.speedTextView);
+    }
+    public void startGPS() {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions((Activity) context, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_READ_CONTACTS);
             ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_REQUEST_READ_CONTACTS);
         }
-
-        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        locationListener = new SpeedActionListener();
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, GPS_UPDATE_MIN_TIME, GPS_UPDATE_MIN_DISTANCE, locationListener);
     }
 
@@ -45,6 +59,7 @@ public class GPSController {
         public void onLocationChanged(Location location) {
             if(location!= null) {
                 currentSpeed = location.getSpeed() * 3.6;
+                gpsSpeedTextView.setText("Current speed :"+currentSpeed);
                 if(currentSpeed > 20) {
 
                 }
@@ -54,14 +69,16 @@ public class GPSController {
                     if(currentSpeed > 10 && lastSpeed > 10) {
                         if (bearing - location.bearingTo(lastLocation) > 5) { //감소
                             //좌회전
-                            if(leftTurnCount == 2) {
+                            if(leftTurnCount == 1) {
                                 //좌회전
+                                gpsStateTextView.setText("좌회전 "+System.currentTimeMillis());
                             }
                             leftTurnCount++;
                         } else if (location.bearingTo(lastLocation) - bearing > 5) { //증가
                             //우회전
-                            if(rightTurnCount == 2) {
+                            if(rightTurnCount == 1) {
                                 //우회전
+                                gpsStateTextView.setText("우회전 "+System.currentTimeMillis());
                             }
                             rightTurnCount ++;
                         } else { //나중에는 회전 이후 몇초 이후에 자동으로 정지하게 만들기

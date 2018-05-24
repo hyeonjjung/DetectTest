@@ -94,7 +94,13 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
         startAccelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                accelController.startAccel();
+            }
+        });
+        startGPSBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gpsController.startGPS();
             }
         });
     }

@@ -23,7 +23,10 @@ public class MagnetController {
     TextView magneticMaxValueTxtview;
     TextView magneticValueTxtview;
 
+    private Context context;
+
     public MagnetController(Context context) {
+        this.context = context;
         magnetManager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
         manget = magnetManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         magnetListenr = new MagnetListener();
@@ -38,7 +41,7 @@ public class MagnetController {
         }
     }
     public void stopMagnetometer() {
-        if(!magnetManager.equals(null)) {
+        if(magnetManager!=null) {
             magnetManager.unregisterListener(magnetListenr);
         }
     }
@@ -54,38 +57,42 @@ public class MagnetController {
         int upCount = 0;
         float normalValue = 0;
         boolean firstTime = true;
+        float FRONT_PARAMETER = (float) 1.5;
 
         @Override
         public void onSensorChanged(SensorEvent sensorEvent) {
+            magneticValueTxtview.setText("start!");
             for(int i = 0 ; i <sensorEvent.values.length; i++) {
                 value[i] = sensorEvent.values[i];
             }
             switch (sensorEvent.sensor.getType()) {
                 case Sensor.TYPE_MAGNETIC_FIELD: // 단위는 마이크로테슬라
-                    for (int i = 0; i < 3; i ++) {
+                    if(firstTime) {
+                        for(int i=0; i<3; i++) {
+                            lastValue[i] = value[i];
+                            firstTime = false;
+                        }
+                    }
+                    //for (int i = 0; i < 3; i ++) {
+                        magneticValueTxtview.setText("State is "+state);
                         if (state == 0) {    //기울기가 급격하게 변하는 구간
-                            magneticMaxValueTxtview.setText("State 0 and "+count);
-                            count++;
-                            if(count < 3){
-                                if(Math.abs(value[i]-lastValue[i]) > 10){  //급감소
+                                if(Math.abs(value[0]-lastValue[0]) > 10 || Math.abs(value[1] - lastValue[1])>10 || Math.abs(value[2] - lastValue[2]) > 10){  //급감소
+                                    magneticMaxValueTxtview.setText("급감소 구간 ");
                                     state = 1;
-                                } else if (value[i]-lastValue[i] > 1) {   //앞좌석 감지 시작 - 상승
+                                } else if ((value[0]-lastValue[0] > FRONT_PARAMETER) || (value[1] - lastValue[1] > FRONT_PARAMETER) || (value[2] - lastValue[2]) > FRONT_PARAMETER) {   //앞좌석 감지 시작 - 상승
                                     state = 2;
-                                } else if (lastValue[i] - value[i] > 1) {   //앞좌석 감지 시작 - 하강
+                                } else if ((lastValue[0] - value[0] > FRONT_PARAMETER) || (lastValue[1] - value[1] > FRONT_PARAMETER) || (lastValue[2] - lastValue[2] > FRONT_PARAMETER)) {   //앞좌석 감지 시작 - 하강
                                     state = 3;
                                 }
-                            } else {
-                                state = 0;
-                                count = 0;
-                            }
                         } else if (state == 1) {    //일정 시간내에 다시 원래 값으로 돌아오는 구간
-                            magneticMaxValueTxtview.setText("State 1 and "+count);
+                            //magneticMaxValueTxtview.setText("State 1 and "+count);
                             if(count < 100) {   //상승
-                                if(value[i] - lastValue[i]>0) { //조금씩 상승
+                                if((value[0] - lastValue[0]>0) || (value[1] - lastValue[1] >0) ||(value[2] - lastValue[2] > 0)) { //조금씩 상승
                                     upCount ++;
                                 }
                                 if(upCount > 30) {
                                     magneticValueTxtview.setText("I detect engine!");
+                                    //stopMagnetometer();
                                 }
                             } else {
                                 count = 0;
@@ -94,13 +101,14 @@ public class MagnetController {
                             }
                             count++;
                         } else if(state == 2) {
-                            magneticMaxValueTxtview.setText("State 2 and "+count);
+                            //magneticMaxValueTxtview.setText("State 2 and "+count);
                             if(count < 100) {
-                                if(value[i] - lastValue[i]<0) { //조금씩 하강
+                                if((value[0] - lastValue[0]<0) || (value[1] - lastValue[1] < 0) || (value[2] - lastValue[2] < 0)) { //조금씩 하강
                                     upCount ++;
                                 }
                                 if(upCount > 30) {
                                     magneticValueTxtview.setText("I'm front seat!");
+                                    //stopMagnetometer();
                                 }
                             } else {
                                 count = 0;
@@ -110,11 +118,12 @@ public class MagnetController {
                             count++;
                         } else if(state == 3) {
                             if(count < 100) {   //상승
-                                if(value[i] - lastValue[i]>0) { //조금씩 상승
+                                if((value[0] - lastValue[0]>0) || (value[1] - lastValue[1] > 0) || (value[2] - lastValue[2] >0)) { //조금씩 상승
                                     upCount ++;
                                 }
                                 if(upCount > 30) {
                                     magneticValueTxtview.setText("I'm front seat!");
+                                    //stopMagnetometer();
                                 }
                             } else {
                                 count = 0;
@@ -123,10 +132,12 @@ public class MagnetController {
                             }
                             count++;
                         } else {
-                            magneticValueTxtview.setText("State 0");
+                            //magneticValueTxtview.setText("State 0");
                         }
-                        lastValue[i] = value[i];
-                    }
+                        for (int i=0; i<3; i++) {
+                            lastValue[i] = value[i];
+                        }
+                    //}
 
                     break;
             }

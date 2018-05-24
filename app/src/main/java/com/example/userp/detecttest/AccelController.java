@@ -66,7 +66,7 @@ public class AccelController {
                         maxValue[i] = value[i];
                     }
                 }
-                accelText.setText(minValue[0]+" "+minValue[1]+" "+minValue[2]+" "+maxValue[0]+" "+maxValue[1]+" "+maxValue[2]);
+                accelText.setText(minValue[0]+" "+minValue[1]+" "+minValue[2]+"\n"+maxValue[0]+" "+maxValue[1]+" "+maxValue[2]);
             }
         }
 
