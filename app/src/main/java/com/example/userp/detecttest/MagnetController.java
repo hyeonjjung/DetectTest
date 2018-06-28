@@ -6,6 +6,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -33,6 +34,7 @@ public class MagnetController {
 
         magneticMaxValueTxtview = (TextView) ((Activity)context).findViewById(R.id.magneticMaxValueTextView);
         magneticValueTxtview = (TextView) ((Activity)context).findViewById(R.id.magneticValueTextView);
+
     }
 
     public void startMangetometer() {
@@ -45,19 +47,23 @@ public class MagnetController {
             magnetManager.unregisterListener(magnetListenr);
         }
     }
+    public void resetMagnetometer() {
+        if(magnetManager!=null) {
+            magnetManager.unregisterListener(magnetListenr);
+            magnetManager.registerListener(magnetListenr, manget, SensorManager.SENSOR_DELAY_FASTEST);
+        }
+    }
 
     public class MagnetListener implements SensorEventListener{
         float[] value = new float[3];
         float[] lastValue = {0,0,0};
         int state = 0;
         int count = 0;
-        float alpha = (float) 0.001;
-        float[] maxValue = {0,0,0};
-        float[] minValue = {0,0,0};
         int upCount = 0;
-        float normalValue = 0;
         boolean firstTime = true;
         float FRONT_PARAMETER = (float) 1.5;
+
+        MySystem mySystem = MySystem.getInstance();
 
         @Override
         public void onSensorChanged(SensorEvent sensorEvent) {
@@ -72,12 +78,12 @@ public class MagnetController {
                             lastValue[i] = value[i];
                             firstTime = false;
                         }
+                        mySystem.setMagneticState(new MagneticState(System.currentTimeMillis(), 0));
                     }
                     //for (int i = 0; i < 3; i ++) {
                         magneticValueTxtview.setText("State is "+state);
                         if (state == 0) {    //기울기가 급격하게 변하는 구간
                                 if(Math.abs(value[0]-lastValue[0]) > 10 || Math.abs(value[1] - lastValue[1])>10 || Math.abs(value[2] - lastValue[2]) > 10){  //급감소
-                                    magneticMaxValueTxtview.setText("급감소 구간 ");
                                     state = 1;
                                 } else if ((value[0]-lastValue[0] > FRONT_PARAMETER) || (value[1] - lastValue[1] > FRONT_PARAMETER) || (value[2] - lastValue[2]) > FRONT_PARAMETER) {   //앞좌석 감지 시작 - 상승
                                     state = 2;
@@ -85,7 +91,6 @@ public class MagnetController {
                                     state = 3;
                                 }
                         } else if (state == 1) {    //일정 시간내에 다시 원래 값으로 돌아오는 구간
-                            //magneticMaxValueTxtview.setText("State 1 and "+count);
                             if(count < 100) {   //상승
                                 if((value[0] - lastValue[0]>0) || (value[1] - lastValue[1] >0) ||(value[2] - lastValue[2] > 0)) { //조금씩 상승
                                     upCount ++;
@@ -93,6 +98,7 @@ public class MagnetController {
                                 if(upCount > 30) {
                                     magneticValueTxtview.setText("I detect engine!");
                                     //stopMagnetometer();
+                                    mySystem.setMagneticState(new MagneticState(System.currentTimeMillis(), 1));
                                 }
                             } else {
                                 count = 0;
@@ -108,7 +114,7 @@ public class MagnetController {
                                 }
                                 if(upCount > 30) {
                                     magneticValueTxtview.setText("I'm front seat!");
-                                    //stopMagnetometer();
+                                    mySystem.setMagneticState(new MagneticState(System.currentTimeMillis(), 2));
                                 }
                             } else {
                                 count = 0;
@@ -124,6 +130,7 @@ public class MagnetController {
                                 if(upCount > 30) {
                                     magneticValueTxtview.setText("I'm front seat!");
                                     //stopMagnetometer();
+                                    mySystem.setMagneticState(new MagneticState(System.currentTimeMillis(), 2));
                                 }
                             } else {
                                 count = 0;
@@ -132,7 +139,7 @@ public class MagnetController {
                             }
                             count++;
                         } else {
-                            //magneticValueTxtview.setText("State 0");
+                            magneticValueTxtview.setText("Not founded...");
                         }
                         for (int i=0; i<3; i++) {
                             lastValue[i] = value[i];

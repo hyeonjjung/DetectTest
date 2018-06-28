@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:background="@color/itemColor"
+        android:background="@color/mainColor"
         android:orientation="vertical"
         android:padding="10dp">
 
@@ -38,7 +38,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/itemColor"
+        android:background="@color/mainColor"
         android:layout_margin="5dp"
         android:padding="10dp"
         android:orientation="vertical">
@@ -64,7 +64,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/itemColor"
+        android:background="@color/mainColor"
         android:layout_margin="5dp"
         android:padding="10dp"
         android:orientation="vertical">
@@ -75,19 +75,20 @@
             android:layout_height="wrap_content"
             android:text="value is ..." />
     </LinearLayout>
-
-    <Button
-        android:id="@+id/gpsStartBtn"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Start gps" />
-
-    <Button
-        android:id="@+id/startMagneticBtn"
+        android:layout_margin="5dp"
+        android:padding="10dp"
+        android:background="@color/mainColor">
+        <TextView
+        android:id="@+id/stateTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="start magnetic field" />
-
+        android:textSize="20dp"
+        android:layout_margin="10dp"
+        android:text="Current state is ..." />
+    </LinearLayout>
     <Button
         android:id="@+id/startBeaconMonitoringBtn"
         android:layout_width="match_parent"
