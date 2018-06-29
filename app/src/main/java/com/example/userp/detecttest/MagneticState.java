@@ -14,6 +14,11 @@ public class MagneticState {
     * */
     private int state = 0;
 
+    public static int NON_STATE = 0;
+    public static int DASH_BOARD = 1;
+    public static int FRONT_SEAT = 2;
+    public static int BACK_SEAT = 3;
+
     public MagneticState(long time, int state) {
         this.time = time;
         this.state = state;

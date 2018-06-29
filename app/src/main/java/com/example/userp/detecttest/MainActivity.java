@@ -16,20 +16,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-import org.altbeacon.beacon.Beacon;
-import org.altbeacon.beacon.BeaconConsumer;
-import org.altbeacon.beacon.BeaconManager;
-import org.altbeacon.beacon.BeaconParser;
-import org.altbeacon.beacon.RangeNotifier;
-import org.altbeacon.beacon.Region;
-
-
-import java.net.URL;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.UUID;
-
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
@@ -38,6 +24,12 @@ public class MainActivity extends AppCompatActivity {
     private Button startBeaconMonitoringBtn = null;
     private Button startAccelBtn = null;
     private Button speedBtn = null;
+    private Button getStateBtn = null;
+    private Button resetBtn = null;
+
+    private Button setMagneticDashBoardBtn = null;
+    private Button setMagneticFrontBtn = null;
+    private Button setMagneticBackBtn = null;
 
     /** Sensor **/
     private GPSController gpsController = null;
@@ -45,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private AccelController accelController = null;
 
     private MySystem mySystem = MySystem.getInstance();
+
+    private TextView currentStateTextView = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +49,18 @@ public class MainActivity extends AppCompatActivity {
         magnetController = new MagnetController(this);
         accelController = new AccelController(this);
 
+        currentStateTextView = (TextView) findViewById(R.id.stateTextView);
+
         //initializing starting buttons
         startBeaconMonitoringBtn = (Button)findViewById(R.id.startBeaconMonitoringBtn);
         startAccelBtn = (Button)findViewById(R.id.startAccelBtn);
         speedBtn = (Button)findViewById(R.id.speedButton);
+        getStateBtn = (Button)findViewById(R.id.getStateButton);
+        resetBtn = (Button)findViewById(R.id.resetStateBtn);
+
+        setMagneticBackBtn = (Button)findViewById(R.id.setMagneticBackBtn);
+        setMagneticDashBoardBtn = (Button)findViewById(R.id.setMagneticDashBoardBtn);
+        setMagneticFrontBtn = (Button) findViewById(R.id.setMagneticFrontBtn);
 
         gpsController.startGPS();
         magnetController.startMangetometer();
@@ -80,6 +82,40 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mySystem.setState(MySystem.SYSTEM_START);
+                currentStateTextView.setText("Current state is "+MySystem.getInstance().getState());
+            }
+        });
+        getStateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainActivity.this, "Current state is "+MySystem.getInstance().getState(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        resetBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mySystem.setState(MySystem.SYSTEM_SLEEP);
+            }
+        });
+        setMagneticFrontBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mySystem.setState(MySystem.MAGNETIC_STATE);
+                mySystem.setMagneticState(new MagneticState(System.currentTimeMillis(), MagneticState.FRONT_SEAT));
+            }
+        });
+        setMagneticBackBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mySystem.setState(MySystem.MAGNETIC_STATE);
+                mySystem.setMagneticState(new MagneticState(System.currentTimeMillis(), MagneticState.BACK_SEAT));
+            }
+        });
+        setMagneticDashBoardBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mySystem.setState(MySystem.MAGNETIC_STATE);
+                mySystem.setMagneticState(new MagneticState(System.currentTimeMillis(), MagneticState.DASH_BOARD));
             }
         });
     }

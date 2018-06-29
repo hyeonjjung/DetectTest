@@ -6,6 +6,7 @@ package com.example.userp.detecttest;
 
 public class MySystem {
 
+    // Before the system start
     public static final int SYSTEM_SLEEP = 0;
     /*
     * 차가 시속 20km를 초과하여 본 시스템이 시작할 때
