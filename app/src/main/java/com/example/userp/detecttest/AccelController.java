@@ -8,6 +8,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 /**
  * Created by userp on 2018-05-23.
  */
@@ -18,7 +20,8 @@ public class AccelController {
     private Sensor accel;
     private boolean isStarted = false;
 
-    TextView accelText;
+    private TextView accelText;
+    private TextView accelMaxValueTextView;
 
     public AccelController(Context context) {
         accelManager = (SensorManager)context.getSystemService(context.SENSOR_SERVICE);
@@ -26,6 +29,7 @@ public class AccelController {
         accelListener = new AccelListener();
 
         accelText = (TextView) ((Activity)context).findViewById(R.id.accelValueTextView);
+        accelMaxValueTextView = (TextView) ((Activity)context).findViewById(R.id.accelMaxValueTextView);
     }
     public void startAccel() {
         if(accelManager!=null && isStarted ==false) {
@@ -66,7 +70,8 @@ public class AccelController {
                         maxValue[i] = value[i];
                     }
                 }
-                accelText.setText(minValue[0]+" "+minValue[1]+" "+minValue[2]+"\n"+maxValue[0]+" "+maxValue[1]+" "+maxValue[2]);
+                accelText.setText(minValue[0]+"\n"+minValue[1]+"\n"+minValue[2]);
+                accelMaxValueTextView.setText(maxValue[0]+"\n"+maxValue[1]+"\n"+maxValue[2]);
             }
         }
 

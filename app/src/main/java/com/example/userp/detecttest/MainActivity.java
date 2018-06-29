@@ -35,10 +35,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     /*** Temperate Start Buttons ***/
-    private Button startGPSBtn = null;
-    private Button startMagneticBtn = null;
     private Button startBeaconMonitoringBtn = null;
     private Button startAccelBtn = null;
+    private Button speedBtn = null;
 
     /** Sensor **/
     private GPSController gpsController = null;
@@ -59,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         //initializing starting buttons
         startBeaconMonitoringBtn = (Button)findViewById(R.id.startBeaconMonitoringBtn);
         startAccelBtn = (Button)findViewById(R.id.startAccelBtn);
+        speedBtn = (Button)findViewById(R.id.speedButton);
 
         gpsController.startGPS();
         magnetController.startMangetometer();
@@ -74,6 +74,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 accelController.startAccel();
+            }
+        });
+        speedBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mySystem.setState(MySystem.SYSTEM_START);
             }
         });
     }

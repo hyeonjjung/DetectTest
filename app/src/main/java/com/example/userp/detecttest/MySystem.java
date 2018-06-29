@@ -7,6 +7,9 @@ package com.example.userp.detecttest;
 public class MySystem {
 
     public static final int SYSTEM_SLEEP = 0;
+    /*
+    * 차가 시속 20km를 초과하여 본 시스템이 시작할 때
+    * */
     public static final int SYSTEM_START = 1;
     public static final int MAGNETIC_STATE = 2;
     public static final int BEACON_STATE = 3;

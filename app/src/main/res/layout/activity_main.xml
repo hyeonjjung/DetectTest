@@ -7,98 +7,181 @@
     android:orientation="vertical"
     tools:context="com.example.userp.detecttest.MainActivity">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:background="@color/mainColor"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/speedTextView"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Current speed : 0 km/h"
-            android:textSize="20dp" />
-        <TextView
-            android:id="@+id/gpsTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nothing"
-            android:textSize="20dp" />
-        <TextView
-            android:id="@+id/resultSpeedTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="I'm not in the car"
-            android:textSize="20dp" />
-    </LinearLayout>
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:background="@color/secondColor">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/mainColor"
-        android:layout_margin="5dp"
-        android:padding="10dp"
-        android:orientation="vertical">
-        <TextView
-            android:id="@+id/locationTextView"
-            android:textSize="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Magnetic Field Sensor" />
-        <TextView
-            android:id="@+id/magneticMaxValueTextView"
-            android:textSize="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Max value is ..." />
-        <TextView
-            android:id="@+id/magneticValueTextView"
-            android:textSize="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="value is ..." />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/mainColor"
-        android:layout_margin="5dp"
-        android:padding="10dp"
-        android:orientation="vertical">
-        <TextView
-            android:id="@+id/accelValueTextView"
-            android:textSize="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="value is ..." />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:padding="10dp"
-        android:background="@color/mainColor">
-        <TextView
-        android:id="@+id/stateTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="20dp"
-        android:layout_margin="10dp"
-        android:text="Current state is ..." />
-    </LinearLayout>
-    <Button
-        android:id="@+id/startBeaconMonitoringBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Start Beacon Monitoring" />
+                <TextView
+                    android:id="@+id/stateTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:fontFamily="monospace"
+                    android:text="Current state is ..."
+                    android:textSize="18dp" />
+            </LinearLayout>
 
-    <Button
-        android:id="@+id/startAccelBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="start accelerometer" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:background="@color/firstColor"
+                android:orientation="vertical"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/mainColor"
+                    android:fontFamily="monospace"
+                    android:padding="5dp"
+                    android:text="Accelerometer"
+                    android:textSize="20dp" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+                    <TextView
+                        android:id="@+id/accelValueTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="monospace"
+                        android:padding="5dp"
+                        android:text="value is ..."
+                        android:textSize="18dp" />
+                    <TextView
+                        android:id="@+id/accelMaxValueTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="monospace"
+                        android:padding="5dp"
+                        android:layout_gravity="right"
+                        android:textSize="18dp"
+                        android:text="Max value is..." />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:background="@color/firstColor"
+                android:orientation="vertical"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/locationTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/mainColor"
+                    android:fontFamily="monospace"
+                    android:padding="5dp"
+                    android:text="Magnetic Field Sensor"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:id="@+id/magneticMaxValueTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="monospace"
+                    android:padding="5dp"
+                    android:text="Max value is ..."
+                    android:textSize="18dp" />
+
+                <TextView
+                    android:id="@+id/magneticValueTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="monospace"
+                    android:padding="5dp"
+                    android:text="value is ..."
+                    android:textSize="18dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@color/firstColor"
+                android:orientation="vertical"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="0dp"
+                    android:background="@color/mainColor"
+                    android:fontFamily="monospace"
+                    android:padding="5dp"
+                    android:text="Speed"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:id="@+id/speedTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="monospace"
+                    android:padding="5dp"
+                    android:text="Current speed : 0 km/h"
+                    android:textSize="18dp" />
+
+                <TextView
+                    android:id="@+id/gpsTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="monospace"
+                    android:padding="5dp"
+                    android:text="Nothing"
+                    android:textSize="18dp" />
+
+                <TextView
+                    android:id="@+id/resultSpeedTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="monospace"
+                    android:padding="5dp"
+                    android:text="I'm not in the car"
+                    android:textSize="18dp" />
+            </LinearLayout>
+            <Button
+                android:id="@+id/startAccelBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@color/mainColor"
+                android:fontFamily="monospace"
+                android:text="start accelerometer" />
+
+            <Button
+                android:id="@+id/startBeaconMonitoringBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@color/mainColor"
+                android:fontFamily="monospace"
+                android:text="Start Beacon Monitoring" />
+            <Button
+                android:id="@+id/speedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@color/mainColor"
+                android:fontFamily="monospace"
+                android:text="Speed Button" />
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>
