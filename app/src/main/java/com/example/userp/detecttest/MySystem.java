@@ -30,6 +30,8 @@ public class MySystem {
 
     public static final int NOT_DRIVER_STATE = 6;
 
+    public static final int ACCEL_BEACON_STATE = 2;
+
     /*
     * Beacon state에서 3초 이내에 beacon을 감지한다면
     * accel state로 가기전에 accel wait state로 가게 됨
@@ -38,9 +40,21 @@ public class MySystem {
 
 
     private static final MySystem ourInstance = new MySystem();
+
     private boolean isStarted = false;
+
     private int state = SYSTEM_SLEEP;
     private long startTime = 0;
+
+    private long accelXMinData = 0;
+    private long accelXMaxData = 0;
+
+    public static int NOT_TURN = 0;
+    public static int LEFT_TURN = 1;
+    public static int RIGHT_TURN = 2;
+
+    private int turnState = NOT_TURN;
+
     MagneticState magneticState = null;
 
     public static MySystem getInstance() {
@@ -48,7 +62,6 @@ public class MySystem {
     }
 
     private MySystem() {
-
     }
     public boolean isStarted() {
         return isStarted;
@@ -73,6 +86,23 @@ public class MySystem {
         }
     }
 
+    public long getAccelXMinData() {
+        return accelXMinData;
+    }
+
+    public long getAccelXMaxData() {
+        return accelXMaxData;
+    }
+
+    public void setAccelXMaxData(long accelXMaxData) {
+        this.accelXMaxData = accelXMaxData;
+    }
+
+    public void setAccelXMinData(long accelXMinData) {
+
+        this.accelXMinData = accelXMinData;
+    }
+
     public int getState() {
         return state;
     }
@@ -80,4 +110,11 @@ public class MySystem {
         this.state = state;
     }
 
+    public int getTurnState() {
+        return turnState;
+    }
+
+    public void setTurnState(int turnState) {
+        this.turnState = turnState;
+    }
 }

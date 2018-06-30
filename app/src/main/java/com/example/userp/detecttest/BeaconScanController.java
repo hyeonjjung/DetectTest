@@ -39,6 +39,7 @@ public class BeaconScanController implements BeaconConsumer {
     private TextView stateTextView = null;
 
     public BeaconScanController(Context context) {
+        this.context = context;
         beaconManager = BeaconManager.getInstanceForApplication(context);
         beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout(BEACON_PARSER));
 
@@ -62,23 +63,41 @@ public class BeaconScanController implements BeaconConsumer {
 
     @Override
     public void onBeaconServiceConnect() {
+
         beaconManager.removeAllRangeNotifiers();
         beaconManager.addRangeNotifier(new RangeNotifier() {
             @Override
             public void didRangeBeaconsInRegion(Collection<Beacon> collection, Region region) {
                 if(collection.size() > 0) {
-                    Log.d(TAG, "Find Beacon !");
                     Iterator<Beacon> iterator = collection.iterator();
                     while(iterator.hasNext()) {
                         Beacon beacon = iterator.next();
                         UUID uuid = beacon.getId1().toUuid();
                         int major = beacon.getId2().toInt();
                         int minor = beacon.getId3().toInt();
-                        Log.d(TAG, beacon.getDataFields().get(0).toString());
                         if(uuid.toString() == MY_UUID) {
+                            Log.d(TAG, "connected");
                             isBeacon = true;
-                            if(mySystem.getState() == 3) {
-                                mySystem.setState(4);
+                            if(mySystem.getState() == MySystem.BEACON_STATE) {
+                                mySystem.setState(MySystem.ACCEL_WAIT_STATE);
+                            } else if(mySystem.getState() == MySystem.ACCEL_BEACON_STATE) {
+                                if(mySystem.getTurnState() == beacon.getDataFields().get(0)) {
+                                    if(mySystem.getTurnState() == MySystem.LEFT_TURN) {
+                                        if(mySystem.getAccelXMinData() < beacon.getDataFields().get(1)) {
+                                            mySystem.setState(MySystem.NOT_DRIVER_STATE);
+                                        } else {
+                                            mySystem.setState(MySystem.DRIVER_STATE);
+                                        }
+                                    } else if (mySystem.getTurnState() == MySystem.RIGHT_TURN) {
+                                        if(mySystem.getAccelXMaxData() > beacon.getDataFields().get(1)) {
+                                            mySystem.setState(MySystem.DRIVER_STATE);
+                                        } else {
+                                            mySystem.setState(MySystem.NOT_DRIVER_STATE);
+                                        }
+                                    } else {
+
+                                    }
+                                }
                             }
                         }
                     }
@@ -94,7 +113,7 @@ public class BeaconScanController implements BeaconConsumer {
 
     @Override
     public Context getApplicationContext() {
-        return null;
+        return context;
     }
 
     @Override

@@ -92,7 +92,7 @@ public class GPSController {
                                 mySystem.setState(MySystem.BEACON_STATE);
 
                                 //BeaconTransmitter & Scanner start for 3 second
-                                beaconController.startBeaconTransmitter(context);
+                                beaconController.startBeaconTransmitter(0, 0);
                                 beaconScanController.startBeaconScan();
                                 beaconStopTask beaconStopTask = new beaconStopTask();
                                 beaconStopTask.execute();
@@ -110,28 +110,33 @@ public class GPSController {
                 }
                 //방위각을 통한 회전 감지
                 // 방위각의 변화가 적으면 직진 감소하면 좌회전 증가하면 우회전
-                if(lastLocation != null && lastLocation != location) {
-                    if(currentSpeed > 10 && lastSpeed > 10) {
-                        if (bearing - location.bearingTo(lastLocation) > 5) { //감소
-                            //좌회전
-                            if(leftTurnCount == 1){
-                                gpsStateTextView.setText("Turn is Left "+System.currentTimeMillis());
-                            }
-                            leftTurnCount++;
-                        } else if (location.bearingTo(lastLocation) - bearing > 5) { // 증가
-                            //우회전
-                            if(rightTurnCount == 1) {
+                if(mySystem.getState() == MySystem.ACCEL_STATE) {
+                    if (lastLocation != null && lastLocation != location) {
+                        if (currentSpeed > 10 && lastSpeed > 10) {
+                            if (bearing - location.bearingTo(lastLocation) > 5) { //감소
+                                //좌회전
+                                if (leftTurnCount == 1) {
+                                    mySystem.setState(MySystem.ACCEL_BEACON_STATE);
+                                    beaconController.startBeaconTransmitter(mySystem.getAccelXMinData(), 1);
+                                    gpsStateTextView.setText("Turn is Left " + System.currentTimeMillis());
+                                }
+                                leftTurnCount++;
+                            } else if (location.bearingTo(lastLocation) - bearing > 5) { // 증가
                                 //우회전
-                                gpsStateTextView.setText("Turn is Right "+System.currentTimeMillis());
+                                if (rightTurnCount == 1) {
+                                    mySystem.setState(MySystem.ACCEL_BEACON_STATE);
+                                    beaconController.startBeaconTransmitter(mySystem.getAccelXMaxData(), 2);
+                                    gpsStateTextView.setText("Turn is Right " + System.currentTimeMillis());
+                                }
+                                rightTurnCount++;
+                            } else { //나중에는 회전 이후 몇초 이후에 자동으로 정지하게 만들기
+                                gpsStateTextView.setText("Turn is Nothing");
+                                leftTurnCount = 0;
+                                rightTurnCount = 0;
                             }
-                            rightTurnCount ++;
-                        } else { //나중에는 회전 이후 몇초 이후에 자동으로 정지하게 만들기
-                            gpsStateTextView.setText("Turn is Nothing");
-                            leftTurnCount = 0;
-                            rightTurnCount = 0;
                         }
+                        bearing = location.bearingTo(lastLocation);
                     }
-                    bearing = location.bearingTo(lastLocation);
                 }
 
                 lastLocation = location;
@@ -160,12 +165,12 @@ public class GPSController {
             protected Void doInBackground(Void... voids) {
                 try {
                     Thread.sleep(3000);
+
+                    beaconController.stopBeaconTransmitter();
+                    beaconScanController.stopBeaconScan();
+
                     if(mySystem.getState() == MySystem.BEACON_STATE) {
                         mySystem.setState(MySystem.DRIVER_STATE);
-
-                        beaconController.stopBeaconTransmitter();
-                        beaconScanController.stopBeaconScan();
-
                     } else if(mySystem.getState() == MySystem.ACCEL_WAIT_STATE) {
                         mySystem.setState(MySystem.ACCEL_STATE);
                         accelController.startAccel();

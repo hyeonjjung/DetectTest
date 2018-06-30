@@ -45,10 +45,11 @@ public class BeaconController {
     private TextView stateTextView = null;
 
     public BeaconController(Context context) {
+        this.context = context;
         stateTextView = (TextView) ((Activity)context).findViewById(R.id.beaconTransmitterTextView);
     }
 
-    public void startBeaconTransmitter(Context context) {
+    public void startBeaconTransmitter(long data, long turnState) {
         if(checkPrerequisites(context)) {
             beaconTransmitter = new BeaconTransmitter(context, new BeaconParser().setBeaconLayout("m:2-3=beac,i:4-19,i:20-21,i:22-23,p:24-24,d:25-25"));
             Beacon beacon = new Beacon.Builder()
@@ -57,10 +58,10 @@ public class BeaconController {
                     .setId3("2")
                     .setManufacturer(0x0000) // Choose a number of 0x00ff or less as some devices cannot detect beacons with a manufacturer code > 0x00ff
                     .setTxPower(-59)
-                    .setDataFields(Arrays.asList(new Long[]{0l}))
+                    .setDataFields(Arrays.asList(new Long[]{turnState, data}))
                     .build();
             beaconTransmitter.startAdvertising(beacon);
-            stateTextView.setText("Transmitter start");
+            stateTextView.setText("Transmitter start "+turnState+" "+data);
         }
     }
     public void stopBeaconTransmitter() {

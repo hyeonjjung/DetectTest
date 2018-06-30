@@ -16,6 +16,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.altbeacon.beacon.Beacon;
+import org.altbeacon.beacon.BeaconTransmitter;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
@@ -39,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
     private MySystem mySystem = MySystem.getInstance();
 
     private TextView currentStateTextView = null;
+
+    private BeaconController beaconController = null;
+    private BeaconScanController beaconScanController = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,11 +71,14 @@ public class MainActivity extends AppCompatActivity {
         gpsController.startGPS();
         magnetController.startMangetometer();
 
+        beaconController = new BeaconController(this);
+        beaconScanController = new BeaconScanController(this);
 
         startBeaconMonitoringBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //startBeaconScan();
+                beaconController.startBeaconTransmitter(0, 0);
+                beaconScanController.startBeaconScan();
             }
         });
         startAccelBtn.setOnClickListener(new View.OnClickListener() {

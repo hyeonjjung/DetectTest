@@ -72,8 +72,10 @@ public class AccelController {
                         maxValue[i] = value[i];
                     }
                 }
-                accelText.setText(minValue[0]+"\n"+minValue[1]+"\n"+minValue[2]);
-                accelMaxValueTextView.setText(maxValue[0]+"\n"+maxValue[1]+"\n"+maxValue[2]);
+                accelText.setText((long)(minValue[0]*100)+"");
+                accelMaxValueTextView.setText((long)(maxValue[0]*100)+"");
+                MySystem.getInstance().setAccelXMinData((long)(minValue[0]*100));
+                MySystem.getInstance().setAccelXMaxData((long)(maxValue[0]*100));
             }
         }
 
