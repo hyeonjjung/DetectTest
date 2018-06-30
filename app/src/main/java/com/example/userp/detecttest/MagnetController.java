@@ -78,7 +78,7 @@ public class MagnetController {
                             lastValue[i] = value[i];
                             firstTime = false;
                         }
-                        mySystem.setMagneticState(new MagneticState(System.currentTimeMillis(), 0));
+                        mySystem.setMagneticState(new MagneticState(System.currentTimeMillis(), MagneticState.NON_STATE));
                     }
                     //for (int i = 0; i < 3; i ++) {
                         magneticValueTxtview.setText("State is "+state);
@@ -96,9 +96,12 @@ public class MagnetController {
                                     upCount ++;
                                 }
                                 if(upCount > 30) {
-                                    magneticValueTxtview.setText("I detect engine!");
-                                    //stopMagnetometer();
-                                    mySystem.setMagneticState(new MagneticState(System.currentTimeMillis(), 1));
+                                    if(mySystem.getMagneticState().getState() == MagneticState.NON_STATE ||
+                                            mySystem.getMagneticState().getState() == MagneticState.FRONT_SEAT ||
+                                            mySystem.getMagneticState().getState() == MagneticState.BACK_SEAT) {
+                                        mySystem.setMagneticState(new MagneticState(System.currentTimeMillis(), MagneticState.DASH_BOARD));
+                                        magneticMaxValueTxtview.setText("Magnetic state is "+mySystem.getMagneticState().getState());
+                                    }
                                 }
                             } else {
                                 count = 0;
@@ -113,8 +116,11 @@ public class MagnetController {
                                     upCount ++;
                                 }
                                 if(upCount > 30) {
-                                    magneticValueTxtview.setText("I'm front seat!");
-                                    mySystem.setMagneticState(new MagneticState(System.currentTimeMillis(), 2));
+                                    if(mySystem.getMagneticState().getState() == MagneticState.NON_STATE ||
+                                            mySystem.getMagneticState().getState() == MagneticState.BACK_SEAT) {
+                                        mySystem.setMagneticState(new MagneticState(System.currentTimeMillis(), MagneticState.FRONT_SEAT));
+                                        magneticMaxValueTxtview.setText("Magnetic state is "+mySystem.getMagneticState().getState());
+                                    }
                                 }
                             } else {
                                 count = 0;
@@ -128,9 +134,11 @@ public class MagnetController {
                                     upCount ++;
                                 }
                                 if(upCount > 30) {
-                                    magneticValueTxtview.setText("I'm front seat!");
-                                    //stopMagnetometer();
-                                    mySystem.setMagneticState(new MagneticState(System.currentTimeMillis(), 2));
+                                    if(mySystem.getMagneticState().getState() == MagneticState.NON_STATE ||
+                                            mySystem.getMagneticState().getState() == MagneticState.BACK_SEAT) {
+                                        mySystem.setMagneticState(new MagneticState(System.currentTimeMillis(), MagneticState.FRONT_SEAT));
+                                        magneticMaxValueTxtview.setText("Magnetic state is "+mySystem.getMagneticState().getState());
+                                    }
                                 }
                             } else {
                                 count = 0;
@@ -139,7 +147,10 @@ public class MagnetController {
                             }
                             count++;
                         } else {
-                            magneticValueTxtview.setText("Not founded...");
+                            if(mySystem.getMagneticState().getState() == MagneticState.NON_STATE) {
+                                mySystem.setMagneticState(new MagneticState(System.currentTimeMillis(), MagneticState.BACK_SEAT));
+                                magneticMaxValueTxtview.setText("Magnetic state is " + mySystem.getMagneticState().getState());
+                            }
                         }
                         for (int i=0; i<3; i++) {
                             lastValue[i] = value[i];

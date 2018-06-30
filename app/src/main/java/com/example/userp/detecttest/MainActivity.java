@@ -88,13 +88,14 @@ public class MainActivity extends AppCompatActivity {
         getStateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "Current state is "+MySystem.getInstance().getState(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Current state is "+MySystem.getInstance().getState()+"\nMagnetic state is "+MySystem.getInstance().getMagneticState().getState(), Toast.LENGTH_SHORT).show();
             }
         });
         resetBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mySystem.setState(MySystem.SYSTEM_SLEEP);
+                mySystem.setMagneticState(new MagneticState(System.currentTimeMillis(), MagneticState.NON_STATE));
             }
         });
         setMagneticFrontBtn.setOnClickListener(new View.OnClickListener() {
