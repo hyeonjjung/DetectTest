@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     tools:context="com.example.userp.detecttest.MainActivity">
     <LinearLayout
         android:orientation="vertical"
@@ -21,6 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
+                android:textColor="@color/black"
                 android:fontFamily="monospace"
                 android:text="Current state is ..."
                 android:textSize="18dp" />
@@ -53,16 +55,18 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="monospace"
                     android:padding="5dp"
+                    android:textColor="@color/black"
                     android:text="value is ..."
-                    android:textSize="18dp" />
+                    android:textSize="15dp" />
                 <TextView
                     android:id="@+id/accelMaxValueTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/black"
                     android:fontFamily="monospace"
                     android:padding="5dp"
                     android:layout_gravity="right"
-                    android:textSize="18dp"
+                    android:textSize="15dp"
                     android:text="Max value is..." />
             </LinearLayout>
         </LinearLayout>
@@ -83,16 +87,17 @@
                 android:fontFamily="monospace"
                 android:padding="5dp"
                 android:text="Magnetic Field Sensor"
-                android:textSize="20dp" />
+                android:textSize="18dp" />
 
             <TextView
                 android:id="@+id/magneticMaxValueTextView"
                 android:layout_width="wrap_content"
+                android:textColor="@color/black"
                 android:layout_height="wrap_content"
                 android:fontFamily="monospace"
                 android:padding="5dp"
                 android:text="Max value is ..."
-                android:textSize="18dp" />
+                android:textSize="15dp" />
 
             <TextView
                 android:id="@+id/magneticValueTextView"
@@ -101,7 +106,8 @@
                 android:fontFamily="monospace"
                 android:padding="5dp"
                 android:text="value is ..."
-                android:textSize="18dp" />
+                android:textColor="@color/black"
+                android:textSize="15dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -121,34 +127,70 @@
                 android:fontFamily="monospace"
                 android:padding="5dp"
                 android:text="Speed"
-                android:textSize="20dp" />
+                android:textSize="18dp" />
 
             <TextView
                 android:id="@+id/speedTextView"
                 android:layout_width="wrap_content"
+                android:textColor="@color/black"
                 android:layout_height="wrap_content"
                 android:fontFamily="monospace"
                 android:padding="5dp"
                 android:text="Current speed : 0 km/h"
-                android:textSize="18dp" />
+                android:textSize="15dp" />
 
             <TextView
                 android:id="@+id/gpsTextView"
+                android:textColor="@color/black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="monospace"
                 android:padding="5dp"
-                android:text="Nothing"
-                android:textSize="18dp" />
+                android:text="Turn is ..."
+                android:textSize="15dp" />
 
             <TextView
                 android:id="@+id/resultSpeedTextView"
+                android:textColor="@color/black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="monospace"
                 android:padding="5dp"
                 android:text="I'm not in the car"
-                android:textSize="18dp" />
+                android:textSize="15dp" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:background="@color/firstColor"
+            android:padding="5dp"
+            android:layout_margin="5dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:textSize="18dp"
+                android:padding="5dp"
+                android:background="@color/mainColor"
+                android:layout_height="wrap_content"
+                android:fontFamily="monospace"
+                android:text="Beacon"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:fontFamily="monospace"
+                android:textColor="@color/black"
+                android:layout_height="wrap_content"
+                android:textSize="15dp"
+                android:padding="5dp"
+                android:text="Detector Stop" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15dp"
+                android:padding="5dp"
+                android:fontFamily="monospace"
+                android:textColor="@color/black"
+                android:text="Transmitter Stop" />
+
         </LinearLayout>
     </LinearLayout>
 

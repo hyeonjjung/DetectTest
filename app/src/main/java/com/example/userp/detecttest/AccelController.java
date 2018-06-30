@@ -12,6 +12,8 @@ import org.w3c.dom.Text;
 
 /**
  * Created by userp on 2018-05-23.
+ *
+ * 일단 안드로이드 폰이 위를 바라보고 있다는 가정 하에 시작
  */
 
 public class AccelController {

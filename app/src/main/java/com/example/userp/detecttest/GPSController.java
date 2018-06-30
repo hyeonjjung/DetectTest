@@ -80,13 +80,14 @@ public class GPSController {
 
                     Toast.makeText(context, "Start system!"+mySystem.getMagneticState().getState(), Toast.LENGTH_SHORT).show();
 
-                    if(mySystem.getMagneticState() != null) {
+                    if(mySystem.getMagneticState() != null && mySystem.getState() == MySystem.SYSTEM_START) {
+                        /*
+                        * If Magnetic field data is detected until 10 minutes after car driving starting
+                        * */
                         if ((mySystem.getStartTime() - mySystem.getMagneticState().getTime()) < 1000 * 60 * 10) {
-                            if (mySystem.getMagneticState().getState() == 1) {
-                                Toast.makeText(context, "I'm in the dash board!", Toast.LENGTH_SHORT).show();
+                            if (mySystem.getMagneticState().getState() == MagneticState.DASH_BOARD) {
                                 mySystem.setState(MySystem.DRIVER_STATE);
-                            } else if (mySystem.getMagneticState().getState() == 3) {
-                                Toast.makeText(context, "I'm in the front seat!", Toast.LENGTH_SHORT).show();
+                            } else if (mySystem.getMagneticState().getState() == MagneticState.FRONT_SEAT) {
                                 mySystem.setState(MySystem.BEACON_STATE);
 
                                 //BeaconTransmitter start for 5 second
@@ -96,16 +97,14 @@ public class GPSController {
 
                                 //Beacon Scanner start for 5 second
                                 beaconScanController.startBeaconScan();
-                            } else if (mySystem.getMagneticState().getState() == 0) {
+                            } else if (mySystem.getMagneticState().getState() == MagneticState.BACK_SEAT) {
                                 mySystem.setState(MySystem.NOT_DRIVER_STATE);
-                                Toast.makeText(context, "I'm in the back seat!", Toast.LENGTH_SHORT).show();
                             } else {
                                 mySystem.setState(MySystem.NOT_DRIVER_STATE);
-                                Toast.makeText(context, "Nothing", Toast.LENGTH_SHORT).show();
                             }
                         }
                     } else {
-                        Toast.makeText(context, "Magnetic state is null", Toast.LENGTH_SHORT).show();
+
                     }
                 }
                 //방위각을 통한 회전 감지
@@ -116,18 +115,18 @@ public class GPSController {
                             //좌회전
                             if(leftTurnCount == 1) {
                                 //좌회전
-                                gpsStateTextView.setText("좌회전 "+System.currentTimeMillis());
+                                gpsStateTextView.setText("Turn is Left "+System.currentTimeMillis());
                             }
                             leftTurnCount++;
                         } else if (location.bearingTo(lastLocation) - bearing > 5) { // 증가
                             //우회전
                             if(rightTurnCount == 1) {
                                 //우회전
-                                gpsStateTextView.setText("우회전 "+System.currentTimeMillis());
+                                gpsStateTextView.setText("Turn is Right "+System.currentTimeMillis());
                             }
                             rightTurnCount ++;
                         } else { //나중에는 회전 이후 몇초 이후에 자동으로 정지하게 만들기
-                            gpsStateTextView.setText("Nothing");
+                            gpsStateTextView.setText("Turn is Nothing");
                             leftTurnCount = 0;
                             rightTurnCount = 0;
                         }

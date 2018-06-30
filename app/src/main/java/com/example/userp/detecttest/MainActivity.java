@@ -101,21 +101,18 @@ public class MainActivity extends AppCompatActivity {
         setMagneticFrontBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mySystem.setState(MySystem.MAGNETIC_STATE);
                 mySystem.setMagneticState(new MagneticState(System.currentTimeMillis(), MagneticState.FRONT_SEAT));
             }
         });
         setMagneticBackBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mySystem.setState(MySystem.MAGNETIC_STATE);
                 mySystem.setMagneticState(new MagneticState(System.currentTimeMillis(), MagneticState.BACK_SEAT));
             }
         });
         setMagneticDashBoardBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mySystem.setState(MySystem.MAGNETIC_STATE);
                 mySystem.setMagneticState(new MagneticState(System.currentTimeMillis(), MagneticState.DASH_BOARD));
             }
         });
