@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.RemoteException;
 import android.util.Log;
+import android.widget.TextView;
 
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
@@ -30,28 +31,32 @@ public class BeaconScanController implements BeaconConsumer {
 
     private Context context;
 
-    private BeaconController beaconController;
     private BeaconManager beaconManager = null;
     private boolean isBeacon = false;
 
     private MySystem mySystem;
 
+    private TextView stateTextView = null;
+
     public BeaconScanController(Context context) {
-        beaconController = new BeaconController();
         beaconManager = BeaconManager.getInstanceForApplication(context);
         beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout(BEACON_PARSER));
 
         mySystem = MySystem.getInstance();
+
+        stateTextView = (TextView) ((Activity)context).findViewById(R.id.beaconScannerTextView);
     }
     public void startBeaconScan() {
         isBeacon = false;
         if(!beaconManager.isBound(this)) {
             beaconManager.bind(this);
+            stateTextView.setText("Scanner start");
         }
     }
     public void stopBeaconScan() {
         if(beaconManager.isBound(this)) {
             beaconManager.unbind(this);
+            stateTextView.setText("Scanner stop");
         }
     }
 

@@ -62,7 +62,7 @@ public class GPSController {
         int rightTurnCount = 0;
 
         MySystem mySystem = MySystem.getInstance();
-        BeaconController beaconController = new BeaconController();
+        BeaconController beaconController = new BeaconController(context);
         BeaconScanController beaconScanController = new BeaconScanController(context);
         AccelController accelController = new AccelController(context);
 
@@ -88,23 +88,24 @@ public class GPSController {
                             if (mySystem.getMagneticState().getState() == MagneticState.DASH_BOARD) {
                                 mySystem.setState(MySystem.DRIVER_STATE);
                             } else if (mySystem.getMagneticState().getState() == MagneticState.FRONT_SEAT) {
+
                                 mySystem.setState(MySystem.BEACON_STATE);
 
-                                //BeaconTransmitter start for 5 second
+                                //BeaconTransmitter & Scanner start for 3 second
                                 beaconController.startBeaconTransmitter(context);
+                                beaconScanController.startBeaconScan();
                                 beaconStopTask beaconStopTask = new beaconStopTask();
                                 beaconStopTask.execute();
 
-                                //Beacon Scanner start for 5 second
-                                beaconScanController.startBeaconScan();
                             } else if (mySystem.getMagneticState().getState() == MagneticState.BACK_SEAT) {
                                 mySystem.setState(MySystem.NOT_DRIVER_STATE);
                             } else {
                                 mySystem.setState(MySystem.NOT_DRIVER_STATE);
                             }
                         }
-                    } else {
-
+                    } else if (mySystem.getState() == MySystem.DRIVER_STATE || mySystem.getState() == MySystem.NOT_DRIVER_STATE) {
+                        beaconScanController.stopBeaconScan();
+                        beaconController.stopBeaconTransmitter();
                     }
                 }
                 //방위각을 통한 회전 감지
@@ -113,8 +114,7 @@ public class GPSController {
                     if(currentSpeed > 10 && lastSpeed > 10) {
                         if (bearing - location.bearingTo(lastLocation) > 5) { //감소
                             //좌회전
-                            if(leftTurnCount == 1) {
-                                //좌회전
+                            if(leftTurnCount == 1){
                                 gpsStateTextView.setText("Turn is Left "+System.currentTimeMillis());
                             }
                             leftTurnCount++;
@@ -159,11 +159,13 @@ public class GPSController {
             @Override
             protected Void doInBackground(Void... voids) {
                 try {
-                    Thread.sleep(5000);
-                    beaconController.stopBeaconTransmitter();
-                    beaconScanController.stopBeaconScan();
+                    Thread.sleep(3000);
                     if(mySystem.getState() == MySystem.BEACON_STATE) {
                         mySystem.setState(MySystem.DRIVER_STATE);
+
+                        beaconController.stopBeaconTransmitter();
+                        beaconScanController.stopBeaconScan();
+
                     } else if(mySystem.getState() == MySystem.ACCEL_WAIT_STATE) {
                         mySystem.setState(MySystem.ACCEL_STATE);
                         accelController.startAccel();

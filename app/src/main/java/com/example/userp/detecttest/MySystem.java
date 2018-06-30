@@ -30,6 +30,10 @@ public class MySystem {
 
     public static final int NOT_DRIVER_STATE = 6;
 
+    /*
+    * Beacon state에서 3초 이내에 beacon을 감지한다면
+    * accel state로 가기전에 accel wait state로 가게 됨
+    * */
     public static final int ACCEL_WAIT_STATE = 7;
 
 

@@ -15,6 +15,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.RemoteException;
 import android.util.Log;
+import android.widget.TextView;
 
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
@@ -35,9 +36,17 @@ public class BeaconController {
 
     private static final String TAG = "BeaconController";
 
+    private Context context;
+
     private BeaconTransmitter beaconTransmitter = null;
     private BeaconManager beaconManager = null;
     private BeaconConsumer beaconConsumer = null;
+
+    private TextView stateTextView = null;
+
+    public BeaconController(Context context) {
+        stateTextView = (TextView) ((Activity)context).findViewById(R.id.beaconTransmitterTextView);
+    }
 
     public void startBeaconTransmitter(Context context) {
         if(checkPrerequisites(context)) {
@@ -51,11 +60,13 @@ public class BeaconController {
                     .setDataFields(Arrays.asList(new Long[]{0l}))
                     .build();
             beaconTransmitter.startAdvertising(beacon);
+            stateTextView.setText("Transmitter start");
         }
     }
     public void stopBeaconTransmitter() {
         if (beaconTransmitter != null) {
             beaconTransmitter.stopAdvertising();
+            stateTextView.setText("Transmitter stop");
         }
     }
 

@@ -175,14 +175,16 @@
                 android:fontFamily="monospace"
                 android:text="Beacon"/>
             <TextView
+                android:id="@+id/beaconScannerTextView"
                 android:layout_width="match_parent"
                 android:fontFamily="monospace"
                 android:textColor="@color/black"
                 android:layout_height="wrap_content"
                 android:textSize="15dp"
                 android:padding="5dp"
-                android:text="Detector Stop" />
+                android:text="Scanner stop" />
             <TextView
+                android:id="@+id/beaconTransmitterTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="15dp"
