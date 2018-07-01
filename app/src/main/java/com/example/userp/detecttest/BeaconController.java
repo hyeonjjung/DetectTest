@@ -25,6 +25,7 @@ import org.altbeacon.beacon.BeaconTransmitter;
 import org.altbeacon.beacon.MonitorNotifier;
 import org.altbeacon.beacon.Region;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -58,10 +59,12 @@ public class BeaconController {
                     .setId3("2")
                     .setManufacturer(0x0000) // Choose a number of 0x00ff or less as some devices cannot detect beacons with a manufacturer code > 0x00ff
                     .setTxPower(-59)
-                    .setDataFields(Arrays.asList(new Long[]{turnState, data}))
+                    .setDataFields(Arrays.asList(new Long[]{data}))
                     .build();
             beaconTransmitter.startAdvertising(beacon);
-            stateTextView.setText("Transmitter start "+turnState+" "+data);
+            //Log.d(TAG, beacon.getDataFields().toString());
+            //Log.d(TAG, beacon.getExtraDataFields().toString());
+            //stateTextView.setText("Transmitter start "+turnState+" "+data);
         }
     }
     public void stopBeaconTransmitter() {

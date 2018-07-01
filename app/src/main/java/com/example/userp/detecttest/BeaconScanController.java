@@ -26,10 +26,10 @@ import java.util.UUID;
 public class BeaconScanController implements BeaconConsumer {
     private static final String TAG = "BeaconScanController";
 
+    Context context;
+
     private static final String BEACON_PARSER = "m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24,d:25-25";
     private static final String MY_UUID = "2F234454-CF6D-4A0F-ADF2-F4911BA9FFA6";
-
-    private Context context;
 
     private BeaconManager beaconManager = null;
     private boolean isBeacon = false;
@@ -63,7 +63,7 @@ public class BeaconScanController implements BeaconConsumer {
 
     @Override
     public void onBeaconServiceConnect() {
-
+        Log.d(TAG, "onBeaconServiceConnect()");
         beaconManager.removeAllRangeNotifiers();
         beaconManager.addRangeNotifier(new RangeNotifier() {
             @Override
@@ -75,28 +75,27 @@ public class BeaconScanController implements BeaconConsumer {
                         UUID uuid = beacon.getId1().toUuid();
                         int major = beacon.getId2().toInt();
                         int minor = beacon.getId3().toInt();
-                        if(uuid.toString() == MY_UUID) {
-                            Log.d(TAG, "connected");
+                        if(uuid.toString().toUpperCase().equals(MY_UUID)) {
+                            //Log.d(TAG, "beacon data is "+beacon.getDataFields());
+                            //Log.d(TAG, "connected "+beacon.getDataFields().get(0)+" "+beacon.getDataFields().get(1));
                             isBeacon = true;
                             if(mySystem.getState() == MySystem.BEACON_STATE) {
                                 mySystem.setState(MySystem.ACCEL_WAIT_STATE);
                             } else if(mySystem.getState() == MySystem.ACCEL_BEACON_STATE) {
-                                if(mySystem.getTurnState() == beacon.getDataFields().get(0)) {
-                                    if(mySystem.getTurnState() == MySystem.LEFT_TURN) {
-                                        if(mySystem.getAccelXMinData() < beacon.getDataFields().get(1)) {
-                                            mySystem.setState(MySystem.NOT_DRIVER_STATE);
-                                        } else {
-                                            mySystem.setState(MySystem.DRIVER_STATE);
-                                        }
-                                    } else if (mySystem.getTurnState() == MySystem.RIGHT_TURN) {
-                                        if(mySystem.getAccelXMaxData() > beacon.getDataFields().get(1)) {
-                                            mySystem.setState(MySystem.DRIVER_STATE);
-                                        } else {
-                                            mySystem.setState(MySystem.NOT_DRIVER_STATE);
-                                        }
+                                if(mySystem.getTurnState() == MySystem.LEFT_TURN) {
+                                    if(mySystem.getAccelXMinData() < beacon.getDataFields().get(0)) {
+                                        mySystem.setState(MySystem.NOT_DRIVER_STATE);
                                     } else {
-
+                                        mySystem.setState(MySystem.DRIVER_STATE);
                                     }
+                                } else if (mySystem.getTurnState() == MySystem.RIGHT_TURN) {
+                                    if(mySystem.getAccelXMaxData() > beacon.getDataFields().get(0)) {
+                                        mySystem.setState(MySystem.DRIVER_STATE);
+                                    } else {
+                                        mySystem.setState(MySystem.NOT_DRIVER_STATE);
+                                    }
+                                } else {
+
                                 }
                             }
                         }
@@ -118,11 +117,12 @@ public class BeaconScanController implements BeaconConsumer {
 
     @Override
     public void unbindService(ServiceConnection serviceConnection) {
+        context.unbindService(serviceConnection);
 
     }
 
     @Override
     public boolean bindService(Intent intent, ServiceConnection serviceConnection, int i) {
-        return false;
+        return context.bindService(intent, serviceConnection, i);
     }
 }

@@ -17,9 +17,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.altbeacon.beacon.Beacon;
+import org.altbeacon.beacon.BeaconConsumer;
+import org.altbeacon.beacon.BeaconManager;
+import org.altbeacon.beacon.BeaconParser;
 import org.altbeacon.beacon.BeaconTransmitter;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements BeaconConsumer {
 
     private static final String TAG = "MainActivity";
 
@@ -45,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
 
     private BeaconController beaconController = null;
     private BeaconScanController beaconScanController = null;
+
+    String BEACON_PARSER = "m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24,d:25-25";
+    private BeaconManager beaconManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         startBeaconMonitoringBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                beaconController.startBeaconTransmitter(0, 0);
+                beaconController.startBeaconTransmitter(2550, 2);
                 beaconScanController.startBeaconScan();
             }
         });
@@ -132,6 +138,11 @@ public class MainActivity extends AppCompatActivity {
         mySystem.setState(MySystem.SYSTEM_SLEEP);
     }
 
+    @Override
+    public void onBeaconServiceConnect() {
+        Log.d(TAG, "onBeaconServiceConnect()");
+
+    }
 }
 
 
