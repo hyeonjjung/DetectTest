@@ -4,29 +4,47 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.w3c.dom.Text;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by userp on 2018-05-23.
  */
 
 public class GPSController {
+
+    private final String TAG = "GPSController";
     private static int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 101;
 
     private double currentSpeed = 0;
-    private static int GPS_UPDATE_MIN_DISTANCE = 0;
-    private static int GPS_UPDATE_MIN_TIME = 0;
+    private static int GPS_UPDATE_MIN_DISTANCE = 10; //10 meters
+    private static int GPS_UPDATE_MIN_TIME = 1000*60*1; // 1 minute
     private LocationManager locationManager = null;
     private LocationListener locationListener = null;
+
+    boolean isGPSEnabled = false;
+    boolean isNetworkEnabled = false;
+    boolean canGetLocation = false;
+    Location location;
+    double latitude;
+    double longitude;
+
+    private List<Address> addressList;
 
     private Context context;
 
@@ -46,12 +64,27 @@ public class GPSController {
         currentTextVuew = (TextView) ((Activity)context).findViewById(R.id.stateTextView);
     }
     public void startGPS() {
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && context.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions((Activity) context, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_READ_CONTACTS);
             ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_REQUEST_READ_CONTACTS);
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, GPS_UPDATE_MIN_TIME, GPS_UPDATE_MIN_DISTANCE, locationListener);
+        if(locationManager != null) {
+            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if(location != null) {
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+
+                Geocoder gcd = new Geocoder(context);
+                try {
+                    List<Address> locales = gcd.getFromLocation(latitude, longitude, 1);
+                    MySystem.getInstance().setCountryCode(locales.get(0).getCountryCode());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     private class SpeedActionListener implements LocationListener {
@@ -69,6 +102,15 @@ public class GPSController {
         @Override
         public void onLocationChanged(Location location) {
             if(location!= null) {
+                Geocoder gcd = new Geocoder(context.getApplicationContext(), Locale.getDefault());
+                try {
+                    addressList = gcd.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Log.d(TAG, addressList.get(0).getCountryCode());
+                Log.d(TAG, location.getLongitude()+"");
+
                 currentSpeed = location.getSpeed() * 3.6;
                 gpsSpeedTextView.setText("Current speed :"+currentSpeed);
                 currentTextVuew.setText("Current state is "+mySystem.getState()+ " "+mySystem.getMagneticState().getState());

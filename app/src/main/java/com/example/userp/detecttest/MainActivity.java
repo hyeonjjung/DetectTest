@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.RemoteException;
 import android.os.Bundle;
 
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +22,8 @@ import org.altbeacon.beacon.BeaconConsumer;
 import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.BeaconParser;
 import org.altbeacon.beacon.BeaconTransmitter;
+
+import java.util.Locale;
 
 public class MainActivity extends Activity implements BeaconConsumer {
 
@@ -80,6 +83,7 @@ public class MainActivity extends Activity implements BeaconConsumer {
         beaconController = new BeaconController(this);
         beaconScanController = new BeaconScanController(this);
 
+
         startBeaconMonitoringBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -103,7 +107,7 @@ public class MainActivity extends Activity implements BeaconConsumer {
         getStateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "Current state is "+MySystem.getInstance().getState()+"\nMagnetic state is "+MySystem.getInstance().getMagneticState().getState(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Current state is "+MySystem.getInstance().getState()+"\nMagnetic state is "+MySystem.getInstance().getMagneticState().getState()+"\nCountry Code is "+MySystem.getInstance().getCountryCode(), Toast.LENGTH_SHORT).show();
             }
         });
         resetBtn.setOnClickListener(new View.OnClickListener() {

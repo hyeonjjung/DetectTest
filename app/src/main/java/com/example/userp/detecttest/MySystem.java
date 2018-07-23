@@ -41,10 +41,19 @@ public class MySystem {
 
     private static final MySystem ourInstance = new MySystem();
 
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
+    }
+
     private boolean isStarted = false;
 
     private int state = SYSTEM_SLEEP;
     private long startTime = 0;
+    private String countryCode;
 
     private long accelXMinData = 0;
     private long accelXMaxData = 0;
