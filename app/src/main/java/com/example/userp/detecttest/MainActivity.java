@@ -29,6 +29,10 @@ public class MainActivity extends Activity implements BeaconConsumer {
 
     private static final String TAG = "MainActivity";
 
+    /*** System start and stop button ***/
+    private Button startBtn = null;
+    private Button stopBtn = null;
+
     /*** Temperate Start Buttons ***/
     private Button startBeaconMonitoringBtn = null;
     private Button startAccelBtn = null;
@@ -66,6 +70,7 @@ public class MainActivity extends Activity implements BeaconConsumer {
 
         currentStateTextView = (TextView) findViewById(R.id.stateTextView);
 
+
         //initializing starting buttons
         startBeaconMonitoringBtn = (Button)findViewById(R.id.startBeaconMonitoringBtn);
         startAccelBtn = (Button)findViewById(R.id.startAccelBtn);
@@ -76,6 +81,7 @@ public class MainActivity extends Activity implements BeaconConsumer {
         setMagneticBackBtn = (Button)findViewById(R.id.setMagneticBackBtn);
         setMagneticDashBoardBtn = (Button)findViewById(R.id.setMagneticDashBoardBtn);
         setMagneticFrontBtn = (Button) findViewById(R.id.setMagneticFrontBtn);
+
 
         gpsController.startGPS();
         magnetController.startMangetometer();
@@ -135,6 +141,7 @@ public class MainActivity extends Activity implements BeaconConsumer {
                 mySystem.setMagneticState(new MagneticState(System.currentTimeMillis(), MagneticState.DASH_BOARD));
             }
         });
+
     }
     @Override
     public void onPause() {

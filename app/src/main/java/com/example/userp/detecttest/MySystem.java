@@ -1,5 +1,7 @@
 package com.example.userp.detecttest;
 
+import android.content.Context;
+
 /**
  * Created by userp on 2018-05-27
  * 시스템이 동작하지 않고 GPS와 Magnetic field만 동작하기 있을 때에는 state 0

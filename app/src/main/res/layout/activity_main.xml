@@ -13,6 +13,26 @@
         android:layout_width="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/startBtn"
+                android:layout_height="wrap_content"
+                android:text="START"
+                android:layout_margin="5dp"
+                android:background="@color/mainColor"
+                android:layout_width="150dp"/>
+            <Button
+                android:id="@+id/stopBtn"
+                android:layout_margin="5dp"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:background="@color/mainColor"
+                android:text="STOP"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
             android:background="@color/secondColor">
@@ -25,11 +45,12 @@
                 android:textColor="@color/black"
                 android:fontFamily="monospace"
                 android:text="Current state is ..."
-                android:textSize="18dp" />
+                android:textSize="15dp" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:visibility="gone"
             android:layout_margin="5dp"
             android:background="@color/firstColor"
             android:orientation="vertical"
@@ -42,7 +63,7 @@
                 android:fontFamily="monospace"
                 android:padding="5dp"
                 android:text="Accelerometer"
-                android:textSize="18dp" />
+                android:textSize="15dp" />
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -57,7 +78,7 @@
                     android:padding="5dp"
                     android:textColor="@color/black"
                     android:text="value is ..."
-                    android:textSize="15dp" />
+                    android:textSize="13dp" />
                 <TextView
                     android:id="@+id/accelMaxValueTextView"
                     android:layout_width="wrap_content"
@@ -66,7 +87,7 @@
                     android:fontFamily="monospace"
                     android:padding="5dp"
                     android:layout_gravity="right"
-                    android:textSize="15dp"
+                    android:textSize="13dp"
                     android:text="Max value is..." />
             </LinearLayout>
         </LinearLayout>
@@ -77,6 +98,7 @@
             android:layout_margin="5dp"
             android:background="@color/firstColor"
             android:orientation="vertical"
+            android:visibility="gone"
             android:padding="5dp">
 
             <TextView
@@ -87,7 +109,7 @@
                 android:fontFamily="monospace"
                 android:padding="5dp"
                 android:text="Magnetic Field Sensor"
-                android:textSize="18dp" />
+                android:textSize="15dp" />
 
             <TextView
                 android:id="@+id/magneticMaxValueTextView"
@@ -97,7 +119,7 @@
                 android:fontFamily="monospace"
                 android:padding="5dp"
                 android:text="Max value is ..."
-                android:textSize="15dp" />
+                android:textSize="13dp" />
 
             <TextView
                 android:id="@+id/magneticValueTextView"
@@ -107,7 +129,7 @@
                 android:padding="5dp"
                 android:text="value is ..."
                 android:textColor="@color/black"
-                android:textSize="15dp" />
+                android:textSize="13dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -127,7 +149,7 @@
                 android:fontFamily="monospace"
                 android:padding="5dp"
                 android:text="Speed"
-                android:textSize="18dp" />
+                android:textSize="15dp" />
 
             <TextView
                 android:id="@+id/speedTextView"
@@ -137,7 +159,7 @@
                 android:fontFamily="monospace"
                 android:padding="5dp"
                 android:text="Current speed : 0 km/h"
-                android:textSize="15dp" />
+                android:textSize="13dp" />
 
             <TextView
                 android:id="@+id/gpsTextView"
@@ -147,7 +169,7 @@
                 android:fontFamily="monospace"
                 android:padding="5dp"
                 android:text="Turn is ..."
-                android:textSize="15dp" />
+                android:textSize="13dp" />
 
             <TextView
                 android:id="@+id/resultSpeedTextView"
@@ -157,7 +179,7 @@
                 android:fontFamily="monospace"
                 android:padding="5dp"
                 android:text="I'm not in the car"
-                android:textSize="15dp" />
+                android:textSize="13dp" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -168,7 +190,7 @@
             android:orientation="vertical">
             <TextView
                 android:layout_width="match_parent"
-                android:textSize="18dp"
+                android:textSize="15dp"
                 android:padding="5dp"
                 android:background="@color/mainColor"
                 android:layout_height="wrap_content"
@@ -180,14 +202,14 @@
                 android:fontFamily="monospace"
                 android:textColor="@color/black"
                 android:layout_height="wrap_content"
-                android:textSize="15dp"
+                android:textSize="13dp"
                 android:padding="5dp"
                 android:text="Scanner stop" />
             <TextView
                 android:id="@+id/beaconTransmitterTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="15dp"
+                android:textSize="13dp"
                 android:padding="5dp"
                 android:fontFamily="monospace"
                 android:textColor="@color/black"

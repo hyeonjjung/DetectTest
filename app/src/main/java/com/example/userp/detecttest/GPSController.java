@@ -13,6 +13,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,7 +55,12 @@ public class GPSController {
     TextView gpsSpeedTextView;
     TextView currentTextVuew;
 
-    public GPSController(Context context) {
+    private Button startBtn;
+    private Button stopBtn;
+
+    private LogManager logManager;
+
+    public GPSController(final Context context) {
         this.context = context;
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         locationListener = new SpeedActionListener();
@@ -62,6 +69,26 @@ public class GPSController {
         gpsStateTextView = (TextView) ((Activity)context).findViewById(R.id.resultSpeedTextView);
         gpsSpeedTextView = (TextView) ((Activity)context).findViewById(R.id.speedTextView);
         currentTextVuew = (TextView) ((Activity)context).findViewById(R.id.stateTextView);
+
+        startBtn = (Button) ((Activity) context).findViewById(R.id.startBtn);
+        stopBtn = (Button) ((Activity) context).findViewById(R.id.stopBtn);
+
+        logManager = new LogManager(context, "DriverDetection");
+
+        startBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, "System start!", Toast.LENGTH_SHORT).show();
+                logManager.makeFile();
+            }
+        });
+        stopBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, "System stop!", Toast.LENGTH_SHORT).show();
+                logManager.stopWritingFile();
+            }
+        });
     }
     public void startGPS() {
         if (context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
