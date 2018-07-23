@@ -1,5 +1,6 @@
 package com.example.userp.detecttest;
 
+import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -7,7 +8,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.os.RemoteException;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.util.Log;
@@ -22,7 +22,7 @@ import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.BeaconParser;
 import org.altbeacon.beacon.BeaconTransmitter;
 
-public class MainActivity extends AppCompatActivity implements BeaconConsumer {
+public class MainActivity extends Activity implements BeaconConsumer {
 
     private static final String TAG = "MainActivity";
 

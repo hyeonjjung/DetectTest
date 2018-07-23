@@ -85,14 +85,18 @@ public class BeaconScanController implements BeaconConsumer {
                                 if(mySystem.getTurnState() == MySystem.LEFT_TURN) {
                                     if(mySystem.getAccelXMinData() < beacon.getDataFields().get(0)) {
                                         mySystem.setState(MySystem.NOT_DRIVER_STATE);
+                                        stateTextView.setText("Current state is "+MySystem.getInstance().getState());
                                     } else {
                                         mySystem.setState(MySystem.DRIVER_STATE);
+                                        stateTextView.setText("Current state is "+MySystem.getInstance().getState());
                                     }
                                 } else if (mySystem.getTurnState() == MySystem.RIGHT_TURN) {
                                     if(mySystem.getAccelXMaxData() > beacon.getDataFields().get(0)) {
                                         mySystem.setState(MySystem.DRIVER_STATE);
+                                        stateTextView.setText("Current state is "+MySystem.getInstance().getState());
                                     } else {
                                         mySystem.setState(MySystem.NOT_DRIVER_STATE);
+                                        stateTextView.setText("Current state is "+MySystem.getInstance().getState());
                                     }
                                 } else {
 
