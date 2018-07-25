@@ -124,6 +124,7 @@ public class GPSController {
                 if(currentSpeed > 20 && mySystem.getState() == MySystem.SYSTEM_SLEEP) {
                     mySystem.setState(MySystem.SYSTEM_START);
                     mySystem.setStartTime(System.currentTimeMillis());
+                    LogManager.getInstance().writeFile("GPS");
 
                     Toast.makeText(context, "Start system!"+mySystem.getMagneticState().getState(), Toast.LENGTH_SHORT).show();
 
@@ -134,9 +135,11 @@ public class GPSController {
                         if ((mySystem.getStartTime() - mySystem.getMagneticState().getTime()) < 1000 * 60 * 10) {
                             if (mySystem.getMagneticState().getState() == MagneticState.DASH_BOARD) {
                                 mySystem.setState(MySystem.DRIVER_STATE);
+                                LogManager.getInstance().writeFile("Magnetic");
                             } else if (mySystem.getMagneticState().getState() == MagneticState.FRONT_SEAT) {
 
                                 mySystem.setState(MySystem.BEACON_STATE);
+                                LogManager.getInstance().writeFile("Magnetic");
 
                                 //BeaconTransmitter & Scanner start for 3 second
                                 beaconController.startBeaconTransmitter(0, 0);
@@ -146,8 +149,10 @@ public class GPSController {
 
                             } else if (mySystem.getMagneticState().getState() == MagneticState.BACK_SEAT) {
                                 mySystem.setState(MySystem.NOT_DRIVER_STATE);
+                                LogManager.getInstance().writeFile("Magnetic");
                             } else {
                                 mySystem.setState(MySystem.NOT_DRIVER_STATE);
+                                LogManager.getInstance().writeFile("Magnetic");
                             }
                         }
                     } else if (mySystem.getState() == MySystem.DRIVER_STATE || mySystem.getState() == MySystem.NOT_DRIVER_STATE) {
@@ -164,6 +169,7 @@ public class GPSController {
                                 //좌회전
                                 if (leftTurnCount == 1) {
                                     mySystem.setState(MySystem.ACCEL_BEACON_STATE);
+                                    LogManager.getInstance().writeFile("GPS_turn");
                                     beaconController.startBeaconTransmitter(mySystem.getAccelXMinData(), 1);
                                     gpsStateTextView.setText("Turn is Left " + System.currentTimeMillis());
                                 }
@@ -172,6 +178,7 @@ public class GPSController {
                                 //우회전
                                 if (rightTurnCount == 1) {
                                     mySystem.setState(MySystem.ACCEL_BEACON_STATE);
+                                    LogManager.getInstance().writeFile("GPS_turn");
                                     beaconController.startBeaconTransmitter(mySystem.getAccelXMaxData(), 2);
                                     gpsStateTextView.setText("Turn is Right " + System.currentTimeMillis());
                                 }
@@ -218,8 +225,10 @@ public class GPSController {
 
                     if(mySystem.getState() == MySystem.BEACON_STATE) {
                         mySystem.setState(MySystem.DRIVER_STATE);
+                        LogManager.getInstance().writeFile("Beacon");
                     } else if(mySystem.getState() == MySystem.ACCEL_WAIT_STATE) {
                         mySystem.setState(MySystem.ACCEL_STATE);
+                        LogManager.getInstance().writeFile("Time");
                         accelController.startAccel();
                     }
                 } catch (InterruptedException e) {

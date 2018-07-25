@@ -77,7 +77,7 @@ public class LogManager {
 
     public void writeFile(String sensor) {
         try {
-            fileWriter.write(String.format("%s, %s, %s\n", getCurrentTimeStamp(), MySystem.getInstance().getState(), sensor));
+            fileWriter.write(String.format("%s, %s, %s, %s\n", getCurrentTimeStamp(), MySystem.getInstance().getState(), MySystem.getInstance().getMagneticState().getState(), sensor));
         } catch (IOException e) {
             e.printStackTrace();
         }
