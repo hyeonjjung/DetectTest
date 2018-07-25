@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name = "location">
+        <item> Dash board </item>
+        <item> Driver </item>
+        <item> Passenger</item>
+        <item> Back seat</item>
+    </string-array>
+</resources>

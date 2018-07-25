@@ -55,9 +55,6 @@ public class GPSController {
     TextView gpsSpeedTextView;
     TextView currentTextVuew;
 
-    private Button startBtn;
-    private Button stopBtn;
-
     private LogManager logManager;
 
     public GPSController(final Context context) {
@@ -70,25 +67,6 @@ public class GPSController {
         gpsSpeedTextView = (TextView) ((Activity)context).findViewById(R.id.speedTextView);
         currentTextVuew = (TextView) ((Activity)context).findViewById(R.id.stateTextView);
 
-        startBtn = (Button) ((Activity) context).findViewById(R.id.startBtn);
-        stopBtn = (Button) ((Activity) context).findViewById(R.id.stopBtn);
-
-        logManager = new LogManager(context, "DriverDetection");
-
-        startBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(context, "System start!", Toast.LENGTH_SHORT).show();
-                logManager.makeFile();
-            }
-        });
-        stopBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(context, "System stop!", Toast.LENGTH_SHORT).show();
-                logManager.stopWritingFile();
-            }
-        });
     }
     public void startGPS() {
         if (context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED

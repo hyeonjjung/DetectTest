@@ -21,22 +21,21 @@ public class LogManager {
 
     private final String TAG = "LogManager";
 
-    private int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 101;
+    private static LogManager mLogManager = new LogManager();
 
     private File appDirectory;
-    private FileWriter fileWriter;
+    private static FileWriter fileWriter;
 
-    private String fileName;
+    private String fileName = "DriverDetection";
 
     private boolean isFileAvailable = false;
 
-    public LogManager(Context context, String fileName) {
-        mContext = context;
-        this.fileName = fileName;
-
-        permissionCheck();
+    private LogManager() {
         fileInit(fileName);
+    }
 
+    public static LogManager getInstance() {
+        return mLogManager;
     }
     private void fileInit (String fileName) {
         if(isExternalStorageWritable()) {
@@ -47,45 +46,20 @@ public class LogManager {
             }
         }
     }
-    public void makeFile() {
+    public void makeFile(String location) {
         if(!isFileAvailable) {
             try {
-                fileWriter = new FileWriter(new File(appDirectory, System.currentTimeMillis() + ".csv"));
+                fileWriter = new FileWriter(new File(appDirectory, location+System.currentTimeMillis() + ".csv"));
+                isFileAvailable = true;
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
             Log.d(TAG, "Failed to make file...");
         }
+        Log.d(TAG, fileWriter.toString());
     }
-    private void permissionCheck() {
-        // Here, thisActivity is the current activity
-        if (ContextCompat.checkSelfPermission(mContext,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
 
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) mContext,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-            } else {
-
-                // No explanation needed, we can request the permission.
-
-                ActivityCompat.requestPermissions((Activity) mContext,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        MY_PERMISSIONS_REQUEST_READ_CONTACTS);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
-        }
-    }
 
     private static boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
@@ -95,14 +69,21 @@ public class LogManager {
         return false;
     }
     /*
-    private void writeFile(String time, String state) {
+    * Log file에 들어가야하는 column 정리
+    *
+    *  Timestamp / state / sensor
+    *
+    * */
+
+    public void writeFile(String sensor) {
         try {
-            //fileWriter.write(String.format("%s, %f, %s\n", time, currentSpeed, state));
+            fileWriter.write(String.format("%s, %s, %s\n", getCurrentTimeStamp(), MySystem.getInstance().getState(), sensor));
         } catch (IOException e) {
             e.printStackTrace();
         }
+        Log.d(TAG, "writeFile "+fileWriter.toString());
     }
-    */
+
     private static String getCurrentTimeStamp() {
         try {
 
