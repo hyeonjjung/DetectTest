@@ -40,6 +40,11 @@ public class MySystem {
     * */
     public static final int ACCEL_WAIT_STATE = 7;
 
+    public static final int DRIVER_PAUSE = 8;
+    public static final int PASSENGER_PAUSE = 9;
+
+
+
 
     private static final MySystem ourInstance = new MySystem();
 
@@ -56,6 +61,16 @@ public class MySystem {
     private int state = SYSTEM_SLEEP;
     private long startTime = 0;
     private String countryCode;
+
+    public long getPauseStartTime() {
+        return pauseStartTime;
+    }
+
+    public void setPauseStartTime(long pauseStartTime) {
+        this.pauseStartTime = pauseStartTime;
+    }
+
+    private long pauseStartTime = 0;
 
     private long accelXMinData = 0;
     private long accelXMaxData = 0;

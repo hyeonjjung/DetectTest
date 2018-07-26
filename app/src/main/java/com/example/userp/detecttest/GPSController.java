@@ -12,17 +12,12 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by userp on 2018-05-23.
@@ -42,11 +37,14 @@ public class GPSController {
     boolean isGPSEnabled = false;
     boolean isNetworkEnabled = false;
     boolean canGetLocation = false;
+
     Location location;
+
     double latitude;
     double longitude;
 
     private List<Address> addressList;
+    private Geocoder gcd;
 
     private Context context;
 
@@ -74,17 +72,19 @@ public class GPSController {
             ActivityCompat.requestPermissions((Activity) context, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_READ_CONTACTS);
             ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_REQUEST_READ_CONTACTS);
         }
+
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, GPS_UPDATE_MIN_TIME, GPS_UPDATE_MIN_DISTANCE, locationListener);
+
         if(locationManager != null) {
             location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             if(location != null) {
                 latitude = location.getLatitude();
                 longitude = location.getLongitude();
 
-                Geocoder gcd = new Geocoder(context);
+                gcd = new Geocoder(context);
                 try {
-                    List<Address> locales = gcd.getFromLocation(latitude, longitude, 1);
-                    MySystem.getInstance().setCountryCode(locales.get(0).getCountryCode());
+                    addressList = gcd.getFromLocation(latitude, longitude, 1);
+                    MySystem.getInstance().setCountryCode(addressList.get(0).getCountryCode());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -107,18 +107,19 @@ public class GPSController {
         @Override
         public void onLocationChanged(Location location) {
             if(location!= null) {
-                Geocoder gcd = new Geocoder(context.getApplicationContext(), Locale.getDefault());
+                // update country code
                 try {
                     addressList = gcd.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                    if(!MySystem.getInstance().getCountryCode().equalsIgnoreCase(addressList.get(0).getCountryCode())) {
+                        MySystem.getInstance().setCountryCode(addressList.get(0).getCountryCode());
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                Log.d(TAG, addressList.get(0).getCountryCode());
-                Log.d(TAG, location.getLongitude()+"");
 
                 currentSpeed = location.getSpeed() * 3.6;
                 gpsSpeedTextView.setText("Current speed :"+currentSpeed);
-                currentTextVuew.setText("Current state is "+mySystem.getState()+ " "+mySystem.getMagneticState().getState());
+                currentTextVuew.setText("Current state is "+mySystem.getState()+" "+mySystem.getMagneticState().getState());
 
                 //20km/h 이상일 경우 처음 시스템이 시작할때
                 if(currentSpeed > 20 && mySystem.getState() == MySystem.SYSTEM_SLEEP) {
@@ -159,7 +160,31 @@ public class GPSController {
                         beaconScanController.stopBeaconScan();
                         beaconController.stopBeaconTransmitter();
                     }
+                } else if(currentSpeed > 20) {
+                    if(MySystem.getInstance().getState() == MySystem.DRIVER_PAUSE) {
+                        MySystem.getInstance().setState(MySystem.DRIVER_STATE);
+                        LogManager.getInstance().writeFile("GPS");
+                    } else if (MySystem.getInstance().getState() == MySystem.PASSENGER_PAUSE) {
+                        MySystem.getInstance().setState(MySystem.NOT_DRIVER_STATE);
+                        LogManager.getInstance().writeFile("GPS");
+                    }
+                } else if(currentSpeed == 0) {
+                    if(MySystem.getInstance().getState() == MySystem.DRIVER_STATE) {
+                        MySystem.getInstance().setState(MySystem.DRIVER_PAUSE);
+                        LogManager.getInstance().writeFile("GPS");
+                        MySystem.getInstance().setPauseStartTime(System.currentTimeMillis());
+                    } else if (MySystem.getInstance().getState() == MySystem.NOT_DRIVER_STATE) {
+                        MySystem.getInstance().setState(MySystem.PASSENGER_PAUSE);
+                        LogManager.getInstance().writeFile("GPS");
+                        MySystem.getInstance().setPauseStartTime(System.currentTimeMillis());
+                    } else if (MySystem.getInstance().getState() == MySystem.PASSENGER_PAUSE || MySystem.getInstance().getState() == MySystem.DRIVER_PAUSE) {
+                        if(System.currentTimeMillis() - MySystem.getInstance().getPauseStartTime() > 1000*100) { //100 seconds
+                            MySystem.getInstance().setState(MySystem.SYSTEM_SLEEP);
+                            LogManager.getInstance().writeFile("GPS");
+                        }
+                    }
                 }
+
                 //방위각을 통한 회전 감지
                 // 방위각의 변화가 적으면 직진 감소하면 좌회전 증가하면 우회전
                 if(mySystem.getState() == MySystem.ACCEL_STATE) {
